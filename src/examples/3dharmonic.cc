@@ -133,11 +133,13 @@ double potential(const coord_3d& r) {
   return 0.5*(r[0]*r[0]+r[1]*r[1]+r[2]*r[2]) - DELTA;
 }
 
+const std::string path_to_plots="/Users/timo/up_to_date_madness/madness/plots/";
 // Convenience routine for plotting
 void plot(const char* filename, const real_function_3d& f) {
   coord_3d lo(0.0), hi(0.0);
   lo[2] = -L; hi[2] = L;
-  plot_line(filename,401,lo,hi,f);
+  std::string full_path=path_to_plots+filename;
+  plot_line(full_path.c_str(),401,lo,hi,f);
 }
 
 double energy(World& world, const real_function_3d& phi, const real_function_3d& V) {
