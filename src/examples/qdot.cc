@@ -23,6 +23,18 @@ void plot(const char* filename, const Function<double,NDIM>& f) {
     plot_line(full_path.c_str(),401,lo,hi,f);
 }
 
+/*
+template<int NDIM>
+class Rho {
+    double a=100;
+    double Q=1;
+    public:
+        void set_a(double a) { this->a=a; };
+        double rho(const Vector<double,NDIM> &r) {
+            return exp(-a*std::pow(r.normf(),2));
+        }
+};
+*/
 
 template <int NDIM>
 double rho(const Vector<double,NDIM> &r) {
@@ -142,7 +154,7 @@ int main(int argc, char** argv) {
 
 
 
-    run<3>(world);
+    run<1>(world);
 
     world.gop.fence();
     finalize();
