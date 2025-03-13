@@ -139,7 +139,7 @@ int main(int argc, char** argv) {
 
 
 
-    run<3>(world);
+    run<2>(world);
 
     world.gop.fence();
     finalize();
