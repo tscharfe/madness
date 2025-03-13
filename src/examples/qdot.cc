@@ -154,7 +154,7 @@ int main(int argc, char** argv) {
 
 
 
-    run<1>(world);
+    run<2>(world);
 
     world.gop.fence();
     finalize();
