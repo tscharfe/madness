@@ -13,6 +13,16 @@ static const double thresh = 1e-6; // precision
 static const double F=0.0; // electric field
 
 
+const std::string path_to_plots="/Users/timo/up_to_date_madness/madness/cmake-build-debug/plots/";
+// Convenience routine for plotting
+template<int NDIM>
+void plot(const char* filename, const Function<double,NDIM>& f) {
+    Vector<double,NDIM> lo(0.0), hi(0.0);
+    lo[NDIM-1] = -L/2; hi[NDIM-1] = L/2;
+    std::string full_path=path_to_plots+filename;
+    plot_line(full_path.c_str(),401,lo,hi,f);
+}
+
 
 template <int NDIM>
 double rho(const Vector<double,NDIM> &r) {
@@ -34,10 +44,10 @@ Function<double,NDIM> make_potential(World & world) {
     Function<double,NDIM> f=FunctionFactory<double,NDIM>(world).special_level(6).special_points(points).f(rho<NDIM>);
     auto norm=f.trace();
     f=1/norm*f;
-    SeparatedConvolution<double,NDIM> op = CoulombOperator(world, 0.001, 1e-6);
+    SeparatedConvolution<double,NDIM> op = BSHOperator<NDIM>(world, 0.0, 0.001,1e-6);
     auto V=op(f);
     V=V.truncate(thresh);
-    return -1.0*V;
+    return -4.0*constants::pi*V;
 }
 
 
@@ -92,7 +102,7 @@ void run(World& world) {
     FunctionDefaults<NDIM>::set_cubic_cell(-L/2,L/2);
 
     Function<double,NDIM> Vnuc = make_potential<NDIM>(world);
-    plot_plane<NDIM>(world,Vnuc,"Vnuc_plot");
+    plot<NDIM>("Vnuc_plot",Vnuc);
     Function<double,NDIM> psi  = FunctionFactory<double,NDIM>(world).f(guess<NDIM>);
     print("initial", psi.norm2());
     psi.scale(1.0/psi.norm2());
@@ -104,13 +114,15 @@ void run(World& world) {
     }
 
     // Manually tabluate the orbital along a line along the z axis ... probably easier to use the lineplot routine
+    /*
     coord_3d r(0.0);
     psi.reconstruct();
     for (int i=0; i<201; i++) {
         r[2] = -L/2 + L*i/200.0;
         print(r[2], psi(r));
     }
-  
+    */
+
     auto [kinetic_energy, nuclear_attraction_energy, total_energy] = compute_energy<NDIM>(world, Vnuc, psi);
     if (world.rank() == 0) {
         print("            Electric Field ", F);
