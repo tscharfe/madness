@@ -44,6 +44,7 @@ Function<double,NDIM> make_potential(World & world) {
     Function<double,NDIM> f=FunctionFactory<double,NDIM>(world).special_level(6).special_points(points).f(rho<NDIM>);
     auto norm=f.trace();
     f=1/norm*f;
+    plot<NDIM>("rho.dat",f);
     SeparatedConvolution<double,NDIM> op = BSHOperator<NDIM>(world, 0.0, 0.001,1e-6);
     auto V=op(f);
     V=V.truncate(thresh);
@@ -102,7 +103,7 @@ void run(World& world) {
     FunctionDefaults<NDIM>::set_cubic_cell(-L/2,L/2);
 
     Function<double,NDIM> Vnuc = make_potential<NDIM>(world);
-    plot<NDIM>("Vnuc_plot",Vnuc);
+    plot<NDIM>("Vnuc_plot.dat",Vnuc);
     Function<double,NDIM> psi  = FunctionFactory<double,NDIM>(world).f(guess<NDIM>);
     print("initial", psi.norm2());
     psi.scale(1.0/psi.norm2());
@@ -122,6 +123,8 @@ void run(World& world) {
         print(r[2], psi(r));
     }
     */
+    plot<NDIM>("psi.dat",psi);
+
 
     auto [kinetic_energy, nuclear_attraction_energy, total_energy] = compute_energy<NDIM>(world, Vnuc, psi);
     if (world.rank() == 0) {
