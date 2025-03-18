@@ -3,7 +3,6 @@
 #include <madness/mra/mra.h>
 #include <madness/mra/operator.h>
 
-#include "SCF.h"
 
 using namespace madness;
 
@@ -23,46 +22,37 @@ void plot(const char* filename, const Function<double,NDIM>& f) {
     plot_line(full_path.c_str(),401,lo,hi,f);
 }
 
-/*
 template<int NDIM>
-class Rho {
-    double a=100;
-    double Q=1;
+Vector<double,NDIM> origin(0.0);
+
+template<int NDIM>
+class sum_of_gaussians: public FunctionFunctorInterface<double, NDIM> {
     public:
-        void set_a(double a) { this->a=a; };
-        double rho(const Vector<double,NDIM> &r) {
-            return exp(-a*std::pow(r.normf(),2));
+        double a;
+        double Q;
+        std::vector<Vector<double,NDIM> > charge_locations;
+        sum_of_gaussians(double a=100, double Q=1, std::vector<Vector<double,NDIM> > charge_locations={origin<NDIM>}) : a(a), Q(Q), charge_locations(charge_locations) {}
+        double operator()(const Vector<double,NDIM> &r) const override{
+            double result=0.0;
+            for (Vector<double,NDIM> ChargeLoc : charge_locations) {
+                result+=exp(-a*std::pow((r-ChargeLoc).normf(),2));
+            }
+            return result;
         }
 };
-*/
 
 template <int NDIM>
-double rho(const Vector<double,NDIM> &r) {
-    double a=1000.0;
-    return exp(-a*std::pow(r.normf(),2));
-}
-
-template <int NDIM>
-double guess(const Vector<double,NDIM> &r) {
-    return exp(-r.normf()/2.0)/sqrt(8.0*constants::pi);
-}
-
-
-template <int NDIM>
-Function<double,NDIM> make_potential(World & world) {
-    std::vector<Vector<double,NDIM> > points;
-    Vector<double,NDIM> nullvector;
-    points.push_back(nullvector);
-    Function<double,NDIM> f=FunctionFactory<double,NDIM>(world).special_level(6).special_points(points).f(rho<NDIM>);
-    auto norm=f.trace();
-    f=1/norm*f;
+Function<double,NDIM> make_potential(World & world,double a=100, double Q=1, std::vector<Vector<double,NDIM> > charge_locations={origin<NDIM>}) {
+    sum_of_gaussians<NDIM> Rho(a,Q,charge_locations);
+    Function<double,NDIM> f=FunctionFactory<double,NDIM>(world).special_level(6).special_points(Rho.charge_locations).functor(Rho);
+    double norm=f.trace();
+    f=Rho.Q/norm*f;
     plot<NDIM>("rho.dat",f);
     SeparatedConvolution<double,NDIM> op = BSHOperator<NDIM>(world, 0.0, 0.001,1e-6);
     auto V=op(f);
     V=V.truncate(thresh);
     return -4.0*constants::pi*V;
 }
-
 
 
 template <int NDIM>
@@ -114,29 +104,29 @@ void run(World& world) {
     FunctionDefaults<NDIM>::set_truncate_mode(1);
     FunctionDefaults<NDIM>::set_cubic_cell(-L/2,L/2);
 
-    Function<double,NDIM> Vnuc = make_potential<NDIM>(world);
+    double d=0.0;
+    Vector<double,NDIM> Q1(0.0);
+    Vector<double,NDIM> Q2(0.0);
+    Q1[NDIM-1]=-d; Q2[NDIM-1]=d;
+    std::vector<Vector<double,NDIM> > charge_locations={Q1,Q2};
+
+    Function<double,NDIM> Vnuc = make_potential<NDIM>(world,1000,2);
     plot<NDIM>("Vnuc_plot.dat",Vnuc);
-    Function<double,NDIM> psi  = FunctionFactory<double,NDIM>(world).f(guess<NDIM>);
+    sum_of_gaussians<NDIM> guess(1,1,charge_locations);
+    Function<double,NDIM> psi  = FunctionFactory<double,NDIM>(world).special_level(6).special_points(guess.charge_locations).functor(guess);
     print("initial", psi.norm2());
     psi.scale(1.0/psi.norm2());
+    plot<NDIM>("psi_initial.dat",psi);
 
-    double eps = -0.5;
+    double eps = -2.0;
     for (int iter=0; iter<15; iter++) {
         Function<double,NDIM> rho = square(psi).truncate();
         iterate<NDIM>(world, Vnuc, psi, eps);
+        std::string filename="psi_"+std::to_string(iter)+".dat";
+        plot<NDIM>(filename.c_str(),psi);
     }
 
-    // Manually tabluate the orbital along a line along the z axis ... probably easier to use the lineplot routine
-    /*
-    coord_3d r(0.0);
-    psi.reconstruct();
-    for (int i=0; i<201; i++) {
-        r[2] = -L/2 + L*i/200.0;
-        print(r[2], psi(r));
-    }
-    */
     plot<NDIM>("psi.dat",psi);
-
 
     auto [kinetic_energy, nuclear_attraction_energy, total_energy] = compute_energy<NDIM>(world, Vnuc, psi);
     if (world.rank() == 0) {
@@ -154,7 +144,7 @@ int main(int argc, char** argv) {
 
 
 
-    run<2>(world);
+    run<3>(world);
 
     world.gop.fence();
     finalize();
