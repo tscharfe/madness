@@ -68,7 +68,7 @@ void iterate(World& world, Function<double,NDIM>& V, Function<double,NDIM>& psi,
     if (rnorm > 0.2) {
         r *= 0.2/rnorm;
         print("step restriction");
-        eps_new = eps;
+        eps_new = eps - 0.5*inner(Vpsi,r)/(norm*norm);
     }
     else {
         // Only update energy once step restriction is lifted since this is only locally convergent
@@ -104,21 +104,22 @@ void run(World& world) {
     FunctionDefaults<NDIM>::set_truncate_mode(1);
     FunctionDefaults<NDIM>::set_cubic_cell(-L/2,L/2);
 
-    double d=0.0;
+    double d=2.0;
     Vector<double,NDIM> Q1(0.0);
     Vector<double,NDIM> Q2(0.0);
-    Q1[NDIM-1]=-d; Q2[NDIM-1]=d;
+    Q1[NDIM-1]=-d/2; Q2[NDIM-1]=d/2;
     std::vector<Vector<double,NDIM> > charge_locations={Q1,Q2};
 
-    Function<double,NDIM> Vnuc = make_potential<NDIM>(world,1000,2);
+    Function<double,NDIM> Vnuc = make_potential<NDIM>(world,200,2,charge_locations);
     plot<NDIM>("Vnuc_plot.dat",Vnuc);
+
     sum_of_gaussians<NDIM> guess(1,1,charge_locations);
     Function<double,NDIM> psi  = FunctionFactory<double,NDIM>(world).special_level(6).special_points(guess.charge_locations).functor(guess);
     print("initial", psi.norm2());
     psi.scale(1.0/psi.norm2());
     plot<NDIM>("psi_initial.dat",psi);
 
-    double eps = -2.0;
+    double eps = -1.0;
     for (int iter=0; iter<15; iter++) {
         Function<double,NDIM> rho = square(psi).truncate();
         iterate<NDIM>(world, Vnuc, psi, eps);
@@ -134,6 +135,7 @@ void run(World& world) {
         print("            Kinetic energy ", kinetic_energy);
         print(" Nuclear attraction energy ", nuclear_attraction_energy);
         print("              Total energy ", total_energy);
+        print("  including nucl repulsion",total_energy+1/d);
     }
 }
 
