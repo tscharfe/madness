@@ -7,7 +7,7 @@
 using namespace madness;
 
 static const double L = 32.0;   // box size
-static const long k = 7;        // wavelet order
+static const long k = 8;        // wavelet order
 static const double thresh = 1e-6; // precision
 static const double F=0.0; // electric field
 
@@ -21,18 +21,30 @@ void plot(const char* filename, const Function<double,NDIM>& f) {
     std::string full_path=path_to_plots+filename;
     plot_line(full_path.c_str(),401,lo,hi,f);
 }
+/*
+template <int NDIM>
+double rho(const Vector<double,NDIM> &r) {
+    double a=1000.0;
+    return exp(-a*std::pow(r.normf(),2));
+}
+
+template <int NDIM>
+double guess(const Vector<double,NDIM> &r) {
+    return exp(-r.normf()/2.0)/sqrt(8.0*constants::pi);
+}
+*/
 
 template<int NDIM>
 Vector<double,NDIM> origin(0.0);
 
 template<int NDIM>
-class sum_of_gaussians: public FunctionFunctorInterface<double, NDIM> {
+class SumOfGaussians: public FunctionFunctorInterface<double, NDIM> {
     public:
         double a;
         double Q;
         std::vector<Vector<double,NDIM> > charge_locations;
-        sum_of_gaussians(double a=100, double Q=1, std::vector<Vector<double,NDIM> > charge_locations={origin<NDIM>}) : a(a), Q(Q), charge_locations(charge_locations) {}
-        double operator()(const Vector<double,NDIM> &r) const override{
+        SumOfGaussians(double a=100, double Q=1, std::vector<Vector<double,NDIM> > charge_locations={origin<NDIM>}) : a(a), Q(Q), charge_locations(charge_locations) {}
+        double operator()(const Vector<double,NDIM> &r) const override {
             double result=0.0;
             for (Vector<double,NDIM> ChargeLoc : charge_locations) {
                 result+=exp(-a*std::pow((r-ChargeLoc).normf(),2));
@@ -43,8 +55,8 @@ class sum_of_gaussians: public FunctionFunctorInterface<double, NDIM> {
 
 template <int NDIM>
 Function<double,NDIM> make_potential(World & world,double a=100, double Q=1, std::vector<Vector<double,NDIM> > charge_locations={origin<NDIM>}) {
-    sum_of_gaussians<NDIM> Rho(a,Q,charge_locations);
-    Function<double,NDIM> f=FunctionFactory<double,NDIM>(world).special_level(6).special_points(Rho.charge_locations).functor(Rho);
+    SumOfGaussians<NDIM> Rho(a,Q,charge_locations);
+    Function<double,NDIM> f=FunctionFactory<double,NDIM>(world).special_level(20).special_points(Rho.charge_locations).functor(Rho);
     double norm=f.trace();
     f=Rho.Q/norm*f;
     plot<NDIM>("rho.dat",f);
@@ -69,6 +81,7 @@ void iterate(World& world, Function<double,NDIM>& V, Function<double,NDIM>& psi,
         r *= 0.2/rnorm;
         print("step restriction");
         eps_new = eps - 0.5*inner(Vpsi,r)/(norm*norm);
+        if (eps_new > 0.0) {eps_new=-0.2;}
     }
     else {
         // Only update energy once step restriction is lifted since this is only locally convergent
@@ -110,10 +123,10 @@ void run(World& world) {
     Q1[NDIM-1]=-d/2; Q2[NDIM-1]=d/2;
     std::vector<Vector<double,NDIM> > charge_locations={Q1,Q2};
 
-    Function<double,NDIM> Vnuc = make_potential<NDIM>(world,200,2,charge_locations);
+    Function<double,NDIM> Vnuc = make_potential<NDIM>(world,100,2,charge_locations);
     plot<NDIM>("Vnuc_plot.dat",Vnuc);
 
-    sum_of_gaussians<NDIM> guess(1,1,charge_locations);
+    SumOfGaussians<NDIM> guess(1,1,charge_locations);
     Function<double,NDIM> psi  = FunctionFactory<double,NDIM>(world).special_level(6).special_points(guess.charge_locations).functor(guess);
     print("initial", psi.norm2());
     psi.scale(1.0/psi.norm2());
@@ -135,7 +148,6 @@ void run(World& world) {
         print("            Kinetic energy ", kinetic_energy);
         print(" Nuclear attraction energy ", nuclear_attraction_energy);
         print("              Total energy ", total_energy);
-        print("  including nucl repulsion",total_energy+1/d);
     }
 }
 
