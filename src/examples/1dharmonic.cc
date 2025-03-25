@@ -18,7 +18,7 @@ double potential(const coord_1d& r) {
   return 0.5*(r[0]*r[0]) - DELTA;
 }
 
-const std::string path_to_plots="/Users/timo/up_to_date_madness/madness/build/plots/";
+const std::string path_to_plots="/Users/truonthu/Documents/MRA/plots";
 // Convenience routine for plotting
 void plot(const char* filename, const real_function_1d& f) {
   coord_1d lo(0.0), hi(0.0);
