@@ -1135,7 +1135,9 @@ template<size_t NDIM>
         template<typename Q, typename R>
         void gaxpy_inplace_reconstructed(const T& alpha, const FunctionImpl<Q,NDIM>& g, const R& beta, const bool fence) {
             // merge g's tree into this' tree
-            this->merge_trees(beta,g,alpha,fence);
+            gaxpy_inplace(alpha,g,beta,fence);
+            tree_state=redundant_after_merge;
+            // this->merge_trees(beta,g,alpha,fence);
             // tree is now redundant_after_merge
             // sum down the sum coeffs into the leafs if possible to keep the state most clean
             if (fence) sum_down(fence);
@@ -1204,6 +1206,9 @@ template<size_t NDIM>
         };
 
         /// Inplace general bilinear operation
+
+        /// this's world can differ from other's world
+        /// this = alpha * this + beta * other
         /// @param[in]  alpha   prefactor for the current function impl
         /// @param[in]  other   the other function impl
         /// @param[in]  beta    prefactor for other
@@ -1258,6 +1263,9 @@ template<size_t NDIM>
 
         /// Returns true if the function is redundant.
         bool is_redundant() const;
+
+        /// Returns true if the function is redundant_after_merge.
+        bool is_redundant_after_merge() const;
 
         bool is_nonstandard() const;
 
@@ -2377,7 +2385,7 @@ template<size_t NDIM>
         };
 
 
-        /// merge the coefficent boxes of this into other's tree
+        /// merge the coefficient boxes of this into other's tree
 
         /// no comm, and the tree should be in an consistent state by virtue
         /// of FunctionNode::gaxpy_inplace
@@ -3257,6 +3265,18 @@ template<size_t NDIM>
         /// This is a reasonably quick and scalable operation that is
         /// useful for debugging and paranoia.
         void verify_tree() const;
+
+        /// check that parents and children are consistent
+
+        /// will not check proper size of coefficients
+        /// global communication
+        bool verify_parents_and_children() const;
+
+        /// check that the tree state and the coeffs are consistent
+
+        /// will not check existence of children and/or parents
+        /// no communication
+        bool verify_tree_state_local() const;
 
         /// Walk up the tree returning pair(key,node) for first node with coefficients
 
@@ -7131,6 +7151,9 @@ template<size_t NDIM>
 
         /// Returns the number of coefficients in the function ... collective global sum
         std::size_t size() const;
+
+        /// Returns the number of coefficients in the function for this MPI rank
+        std::size_t nCoeff_local() const;
 
         /// Returns the number of coefficients in the function ... collective global sum
         std::size_t nCoeff() const;

@@ -21,14 +21,6 @@ constexpr auto decay_types(std::tuple<Ts...> const &)
 template<typename T>
 using decay_tuple = decltype(decay_types(std::declval<T>()));
 
-template<typename>
-struct is_madness_function_vector : std::false_type {
-};
-
-template<typename T, std::size_t NDIM>
-struct is_madness_function_vector<std::vector<typename madness::Function<T, NDIM>>> : std::true_type {
-};
-
 template<typename Q> struct is_vector : std::false_type { };
 template<typename Q> struct is_vector<std::vector<Q>> : std::true_type { };
 
@@ -169,7 +161,7 @@ public:
     /// copy v_batch into the result vector
     template<typename vecT>
     vecT insert_result_batch(vecT v, const vecT& v_batch) const {
-        return result.template insert_batch(v,v_batch);
+        return result.insert_batch(v,v_batch);
     }
 
     /// pretty print this batch
