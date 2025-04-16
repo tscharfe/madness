@@ -133,7 +133,7 @@ double potential(const coord_3d& r) {
   return 0.5*(r[0]*r[0]+r[1]*r[1]+r[2]*r[2]) - DELTA;
 }
 
-const std::string path_to_plots="/Users/timo/up_to_date_madness/madness/build/plots/";
+const std::string path_to_plots="/Users/timo/workspace/up_to_date_madness/madness/build/plots/";
 // Convenience routine for plotting
 void plot(const char* filename, const real_function_3d& f) {
   coord_3d lo(0.0), hi(0.0);

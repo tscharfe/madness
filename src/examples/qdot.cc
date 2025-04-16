@@ -12,7 +12,7 @@ static const double thresh = 1e-6; // precision
 static const double F=0.0; // electric field
 
 
-const std::string path_to_plots="/Users/timo/up_to_date_madness/madness/cmake-build-debug/plots/";
+const std::string path_to_plots="/Users/timo/workspace/up_to_date_madness/madness/cmake-build-debug/plots/";
 // Convenience routine for plotting
 template<int NDIM>
 void plot(const char* filename, const Function<double,NDIM>& f) {
