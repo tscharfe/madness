@@ -280,11 +280,35 @@ void run1d(int argc, char **argv) {
 
 }
 
+template <int N>
+class test {
+    public:
+        int a;
+        test(int a);
+        int get_sum();
+        int get_sum_squared();
+};
+
+template <int N>
+test<N>::test(int a) : a(a) {}
+
+template<int N>
+int test<N>::get_sum() {
+    return a+N;
+}
+
+template<int N>
+int test<N>::get_sum_squared() {
+    int r=this->get_sum();
+    return r*r;
+}
+
 
 
 int main(int argc, char **argv) {
-    run1d(argc,argv);
-    finalize();
+    test<3> t(6);
+    std::cout << t.get_sum();
+    std::cout << " " << t.get_sum_squared();
 
     return 0;
 }
