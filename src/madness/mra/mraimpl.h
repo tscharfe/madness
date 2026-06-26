@@ -2030,49 +2030,95 @@ namespace madness {
 
         for (std::size_t i=0; i<NDIM; ++i) legendre_scaling_functions(x[i],k,px[i]);
 
+        // Factored (separated) contraction: hoist partial products into outer loops and
+        // walk the innermost dimension via a unit-stride raw pointer.  This cuts the
+        // number of floating multiplies from D*k^D to ~k^D*(1+1/k+...) and removes the
+        // per-element stride computation inside the inner loop.
         if (NDIM == 1) {
-            for (int p=0; p<k; ++p)
-                sum += c(p)*px[0][p];
+            const T* cp = c.ptr();
+            for (int p=0; p<k; ++p) sum += cp[p]*px[0][p];
         }
         else if (NDIM == 2) {
-            for (int p=0; p<k; ++p)
-                for (int q=0; q<k; ++q)
-                    sum += c(p,q)*px[0][p]*px[1][q];
+            for (int p=0; p<k; ++p) {
+                const double a = px[0][p];
+                const T* cq = &c(p,0);
+                T s2 = T(0);
+                for (int q=0; q<k; ++q) s2 += cq[q]*px[1][q];
+                sum += a*s2;
+            }
         }
         else if (NDIM == 3) {
-            for (int p=0; p<k; ++p)
-                for (int q=0; q<k; ++q)
-                    for (int r=0; r<k; ++r)
-                        sum += c(p,q,r)*px[0][p]*px[1][q]*px[2][r];
+            for (int p=0; p<k; ++p) {
+                const double a = px[0][p];
+                for (int q=0; q<k; ++q) {
+                    const double ab = a*px[1][q];
+                    const T* cr = &c(p,q,0);
+                    T s3 = T(0);
+                    for (int r=0; r<k; ++r) s3 += cr[r]*px[2][r];
+                    sum += ab*s3;
+                }
+            }
         }
         else if (NDIM == 4) {
-            for (int p=0; p<k; ++p)
-                for (int q=0; q<k; ++q)
-                    for (int r=0; r<k; ++r)
-                        for (int s=0; s<k; ++s)
-                            sum += c(p,q,r,s)*px[0][p]*px[1][q]*px[2][r]*px[3][s];
+            for (int p=0; p<k; ++p) {
+                const double a = px[0][p];
+                for (int q=0; q<k; ++q) {
+                    const double ab = a*px[1][q];
+                    for (int r=0; r<k; ++r) {
+                        const double abc = ab*px[2][r];
+                        const T* cs = &c(p,q,r,0);
+                        T s4 = T(0);
+                        for (int s=0; s<k; ++s) s4 += cs[s]*px[3][s];
+                        sum += abc*s4;
+                    }
+                }
+            }
         }
         else if (NDIM == 5) {
-            for (int p=0; p<k; ++p)
-                for (int q=0; q<k; ++q)
-                    for (int r=0; r<k; ++r)
-                        for (int s=0; s<k; ++s)
-                            for (int t=0; t<k; ++t)
-                                sum += c(p,q,r,s,t)*px[0][p]*px[1][q]*px[2][r]*px[3][s]*px[4][t];
+            for (int p=0; p<k; ++p) {
+                const double a = px[0][p];
+                for (int q=0; q<k; ++q) {
+                    const double ab = a*px[1][q];
+                    for (int r=0; r<k; ++r) {
+                        const double abc = ab*px[2][r];
+                        for (int s=0; s<k; ++s) {
+                            const double abcd = abc*px[3][s];
+                            const T* ct = &c(p,q,r,s,0);
+                            T s5 = T(0);
+                            for (int t=0; t<k; ++t) s5 += ct[t]*px[4][t];
+                            sum += abcd*s5;
+                        }
+                    }
+                }
+            }
         }
         else if (NDIM == 6) {
-            for (int p=0; p<k; ++p)
-                for (int q=0; q<k; ++q)
-                    for (int r=0; r<k; ++r)
-                        for (int s=0; s<k; ++s)
-                            for (int t=0; t<k; ++t)
-                                for (int u=0; u<k; ++u)
-                                    sum += c(p,q,r,s,t,u)*px[0][p]*px[1][q]*px[2][r]*px[3][s]*px[4][t]*px[5][u];
+            for (int p=0; p<k; ++p) {
+                const double a = px[0][p];
+                for (int q=0; q<k; ++q) {
+                    const double ab = a*px[1][q];
+                    for (int r=0; r<k; ++r) {
+                        const double abc = ab*px[2][r];
+                        for (int s=0; s<k; ++s) {
+                            const double abcd = abc*px[3][s];
+                            for (int t=0; t<k; ++t) {
+                                const double abcde = abcd*px[4][t];
+                                const T* cu = &c(p,q,r,s,t,0);
+                                T s6 = T(0);
+                                for (int u=0; u<k; ++u) s6 += cu[u]*px[5][u];
+                                sum += abcde*s6;
+                            }
+                        }
+                    }
+                }
+            }
         }
         else {
             MADNESS_EXCEPTION("FunctionImpl:eval_cube:NDIM?",NDIM);
         }
-        return sum*pow(2.0,0.5*NDIM*n)/sqrt(FunctionDefaults<NDIM>::get_cell_volume());
+        // exp2 replaces pow for the level-scaling; cell volume computed once per call.
+        const double inv_sqrt_cell_vol = 1.0/std::sqrt(FunctionDefaults<NDIM>::get_cell_volume());
+        return sum * std::exp2(0.5*NDIM*n) * inv_sqrt_cell_vol;
     }
 
     template <typename T, std::size_t NDIM>
