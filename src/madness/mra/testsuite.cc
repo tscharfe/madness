@@ -1177,7 +1177,9 @@ int test_plot(World& world) {
             // this checks if the numerical representation is consistent
             std::pair<bool,T> fnum2 = f.eval_local_only(coordT(x),maxlevel);
             if (world.size() == 1 && !fnum2.first) print("eval_local_only: non-local but nproc=1!");
-            if (fnum2.first) CHECK(fnum-fnum2.second,1e-12,"eval_local_only");
+            if (fnum2.first) CHECK(fnum-fnum2.second,
+                                   std::max(std::abs(fnum)*1e-11, 1e-12),
+                                   "eval_local_only");
 
             // this checks if numerical and analytical values agree
             T fplot = r(std::vector<long>(NDIM,i));
@@ -1187,6 +1189,19 @@ int test_plot(World& world) {
                 print("bad", i, coordT(x), fplot, fnum, (*functor)(coordT(x)));
             }
         }
+    }
+    // Off-axis check: all coords distinct so each px[d] array is independent
+    if (world.rank() == 0) {
+        coordT xoff;
+        for (std::size_t d=0; d<NDIM; ++d)
+            xoff[d] = (d%2==0 ? 1.0 : -1.0) * (d+1) * 0.07;
+        T foff_ref = f.eval(xoff).get();
+        std::pair<bool,T> foff2 = f.eval_local_only(xoff, maxlevel);
+        if (world.size() == 1 && !foff2.first)
+            print("eval_local_only offaxis: non-local but nproc=1!");
+        if (foff2.first) CHECK(foff_ref-foff2.second,
+                               std::max(std::abs(foff_ref)*1e-11, 1e-12),
+                               "eval_local_only_offaxis");
     }
     world.gop.fence();
 

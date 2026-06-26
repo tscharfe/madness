@@ -2965,16 +2965,14 @@ namespace madness {
         Vector<double,NDIM> x = xin;
         keyT key(0);
         Vector<Translation,NDIM> l = key.translation();
-        const ProcessID me = world.rank();
         while (key.level() <= maxlevel) {
-            if (coeffs.owner(key) == me) {
-                typename dcT::futureT fut = coeffs.find(key);
-                typename dcT::iterator it = fut.get();
-                if (it != coeffs.end()) {
-                    nodeT& node = it->second;
-                    if (node.has_coeff()) {
-                        return std::pair<bool,T>(true,eval_cube(key.level(), x, node.coeff().full_tensor()));
-                    }
+            // Single owner-check + local hashmap lookup; releases the read lock
+            // before descending
+            typename dcT::const_accessor acc;
+            if (coeffs.find(acc, key)) {
+                const nodeT& node = acc->second;
+                if (node.has_coeff()) {
+                    return {true, eval_cube(key.level(), x, node.coeff().full_tensor())};
                 }
             }
             for (std::size_t i=0; i<NDIM; ++i) {
@@ -2986,7 +2984,7 @@ namespace madness {
             }
             key = keyT(key.level()+1,l);
         }
-        return std::pair<bool,T>(false,0.0);
+        return {false, T(0)};
     }
 
     template <typename T, std::size_t NDIM>
