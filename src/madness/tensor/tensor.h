@@ -2500,6 +2500,99 @@ MADNESS_PRAGMA_GCC(diagnostic pop)
         return result;
     }
 
+    /// Separated transform with a distinct matrix per dimension, reusing caller buffers.
+    ///
+    /// Computes, with no internal allocation,
+    ///   result(i,j,...) <-- sum(i',j',...) t(i',j',...) c[0](i',i) c[1](j',j) ...
+    /// like general_transform, but the caller provides result and workspace so they
+    /// can be reused across many calls. Both buffers must be contiguous and each at
+    /// least as large as the largest intermediate the contraction produces — i.e.
+    /// max over steps d of the running element count after step d. For non-expanding
+    /// matrices (every c[d].dim(1) <= c[d].dim(0)) that maximum is just t.size(), but
+    /// an expanding axis (m_d > k, e.g. coeffs2values with npt > k) can grow it past
+    /// t.size(), so size to the true maximum, not t.size(). c[d] may be rectangular
+    /// (k x m_d); c[d].dim(0) must equal the corresponding dim of t. Performs no
+    /// communication; safe to call from any task-pool worker thread provided result
+    /// and workspace are not shared between concurrently running calls.
+    ///
+    /// Type constraint: instantiate only for pairs where TENSOR_RESULT_TYPE(T,Q)
+    /// == T (i.e. the matrix type Q does not promote the result past the tensor
+    /// type T). That covers every (T,double) the eval path needs, including
+    /// (double_complex,double). It excludes real-tensor x complex-matrix pairs
+    /// such as (double,double_complex), which the eval path never uses and which
+    /// can hit a missing cblas mixed-type gemm under MKL. See Task 2 for the list.
+    template <class T, class Q>
+    Tensor<TENSOR_RESULT_TYPE(T,Q)>&
+    general_fast_transform(const Tensor<T>& t, const Tensor<Q>* c,
+                           Tensor<TENSOR_RESULT_TYPE(T,Q)>& result,
+                           Tensor<TENSOR_RESULT_TYPE(T,Q)>& workspace) {
+        typedef TENSOR_RESULT_TYPE(T,Q) R;
+        // The matrix type Q must not promote the result past T; otherwise the
+        // contraction lowers to a mixed-type cblas gemm that MKL is missing (see
+        // the tempspec instantiation list). Excluded pairs (e.g. (double,
+        // double_complex)) would compile by implicit instantiation and hit that
+        // gemm — fail loudly at the call site instead.
+        static_assert(std::is_same<TENSOR_RESULT_TYPE(T,Q), T>::value,
+                      "general_fast_transform requires the matrix type not to "
+                      "promote the result; see the tempspec instantiation list");
+        MADNESS_CHECK(result.iscontiguous() && workspace.iscontiguous());
+
+        const long D = t.ndim();
+
+        // Largest intermediate any buffer must hold = max over steps of the output
+        // size. The running count starts at t.size() and is rescaled by dimj/dimk
+        // each step; for expanding matrices (m_d > k) it can exceed t.size().
+        {
+            long running = t.size();
+            long max_running = running;
+            for (long d = 0; d < D; ++d) {
+                running = (running / c[d].dim(0)) * c[d].dim(1);
+                if (running > max_running) max_running = running;
+            }
+            MADNESS_CHECK(result.size() >= max_running &&
+                          workspace.size() >= max_running);
+        }
+
+        R* buf0 = workspace.ptr();
+        R* buf1 = result.ptr();
+        if (D & 1) std::swap(buf0, buf1);  // odd # of steps: final write lands in result
+
+        R*   out = buf0;
+        R*   in_r = nullptr;               // R* source for steps d >= 1
+        long n = t.size();
+
+        for (long d = 0; d < D; ++d) {
+            const long dimk = c[d].dim(0);
+            const long dimj = c[d].dim(1);
+            const long dimi = n / dimk;
+            if (d == 0) {
+                mTxmq(dimi, dimj, dimk, out, t.ptr(), c[d].ptr());
+            } else {
+                mTxmq(dimi, dimj, dimk, out, in_r, c[d].ptr());
+            }
+            n = dimi * dimj;
+            in_r = out;
+            out  = (out == buf0) ? buf1 : buf0;
+        }
+        return result;
+    }
+
+    namespace detail {
+        /// Thread-local grow-on-demand buffer pair for general_fast_transform.
+        /// Each thread gets its own pair; pages first-touch on the calling thread's
+        /// NUMA domain. Buffers grow monotonically — sized to the largest t.size()
+        /// seen on this thread. Never shared between threads.
+        template <typename R>
+        std::pair<Tensor<R>&, Tensor<R>&> eval_scratch(long need) {
+            thread_local Tensor<R> a, b;
+            if (a.size() < need) {
+                a = Tensor<R>(need);
+                b = Tensor<R>(need);
+            }
+            return {a, b};
+        }
+    } // namespace detail
+
     /// Return a new tensor holding the absolute value of each element of t
 
     /// \ingroup tensor
