@@ -2025,97 +2025,20 @@ namespace madness {
     T FunctionImpl<T,NDIM>::eval_cube(Level n, coordT& x, const tensorT& c) const {
         PROFILE_MEMBER_FUNC(FunctionImpl);
         const int k = cdata.k;
-        double px[NDIM][MAXK];
-        T sum = T(0.0);
 
-        for (std::size_t i=0; i<NDIM; ++i) legendre_scaling_functions(x[i],k,px[i]);
+        // Fully separated contraction.  The evaluation
+        //     v = sum_{p,q,...} c[p,q,...] phi_p(x0) phi_q(x1) ...
+        // is a separable tensor contraction, so build one rank-1 (k x 1) "matrix"
+        // of scaling-function values per dimension and feed them to general_transform.
+        Tensor<double> phi[NDIM];
+        for (std::size_t i=0; i<NDIM; ++i) {
+            phi[i] = Tensor<double>(long(k), 1L);
+            legendre_scaling_functions(x[i], k, phi[i].ptr());
+        }
 
-        // Factored (separated) contraction: hoist partial products into outer loops and
-        // walk the innermost dimension via a unit-stride raw pointer.  This cuts the
-        // number of floating multiplies from D*k^D to ~k^D*(1+1/k+...) and removes the
-        // per-element stride computation inside the inner loop.
-        if (NDIM == 1) {
-            const T* cp = c.ptr();
-            for (int p=0; p<k; ++p) sum += cp[p]*px[0][p];
-        }
-        else if (NDIM == 2) {
-            for (int p=0; p<k; ++p) {
-                const double a = px[0][p];
-                const T* cq = &c(p,0);
-                T s2 = T(0);
-                for (int q=0; q<k; ++q) s2 += cq[q]*px[1][q];
-                sum += a*s2;
-            }
-        }
-        else if (NDIM == 3) {
-            for (int p=0; p<k; ++p) {
-                const double a = px[0][p];
-                for (int q=0; q<k; ++q) {
-                    const double ab = a*px[1][q];
-                    const T* cr = &c(p,q,0);
-                    T s3 = T(0);
-                    for (int r=0; r<k; ++r) s3 += cr[r]*px[2][r];
-                    sum += ab*s3;
-                }
-            }
-        }
-        else if (NDIM == 4) {
-            for (int p=0; p<k; ++p) {
-                const double a = px[0][p];
-                for (int q=0; q<k; ++q) {
-                    const double ab = a*px[1][q];
-                    for (int r=0; r<k; ++r) {
-                        const double abc = ab*px[2][r];
-                        const T* cs = &c(p,q,r,0);
-                        T s4 = T(0);
-                        for (int s=0; s<k; ++s) s4 += cs[s]*px[3][s];
-                        sum += abc*s4;
-                    }
-                }
-            }
-        }
-        else if (NDIM == 5) {
-            for (int p=0; p<k; ++p) {
-                const double a = px[0][p];
-                for (int q=0; q<k; ++q) {
-                    const double ab = a*px[1][q];
-                    for (int r=0; r<k; ++r) {
-                        const double abc = ab*px[2][r];
-                        for (int s=0; s<k; ++s) {
-                            const double abcd = abc*px[3][s];
-                            const T* ct = &c(p,q,r,s,0);
-                            T s5 = T(0);
-                            for (int t=0; t<k; ++t) s5 += ct[t]*px[4][t];
-                            sum += abcd*s5;
-                        }
-                    }
-                }
-            }
-        }
-        else if (NDIM == 6) {
-            for (int p=0; p<k; ++p) {
-                const double a = px[0][p];
-                for (int q=0; q<k; ++q) {
-                    const double ab = a*px[1][q];
-                    for (int r=0; r<k; ++r) {
-                        const double abc = ab*px[2][r];
-                        for (int s=0; s<k; ++s) {
-                            const double abcd = abc*px[3][s];
-                            for (int t=0; t<k; ++t) {
-                                const double abcde = abcd*px[4][t];
-                                const T* cu = &c(p,q,r,s,t,0);
-                                T s6 = T(0);
-                                for (int u=0; u<k; ++u) s6 += cu[u]*px[5][u];
-                                sum += abcde*s6;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        else {
-            MADNESS_EXCEPTION("FunctionImpl:eval_cube:NDIM?",NDIM);
-        }
+        const tensorT result = general_transform(c, phi);
+        const T sum = result.ptr()[0];
+
         // exp2 replaces pow for the level-scaling; cell volume computed once per call.
         const double inv_sqrt_cell_vol = 1.0/std::sqrt(FunctionDefaults<NDIM>::get_cell_volume());
         return sum * std::exp2(0.5*NDIM*n) * inv_sqrt_cell_vol;
