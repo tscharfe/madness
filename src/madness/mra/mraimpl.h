@@ -2029,15 +2029,25 @@ namespace madness {
         // Fully separated contraction.  The evaluation
         //     v = sum_{p,q,...} c[p,q,...] phi_p(x0) phi_q(x1) ...
         // is a separable tensor contraction, so build one rank-1 (k x 1) "matrix"
-        // of scaling-function values per dimension and feed them to general_transform.
-        Tensor<double> phi[NDIM];
-        for (std::size_t i=0; i<NDIM; ++i) {
-            phi[i] = Tensor<double>(long(k), 1L);
-            legendre_scaling_functions(x[i], k, phi[i].ptr());
+        // of scaling-function values per dimension and feed them to
+        // general_fast_transform.  This is the innermost per-point path, so the
+        // (k x 1) phi matrices live in thread-local scratch reused across calls:
+        // they are reallocated only when k changes, keeping the hot path
+        // allocation-free.  thread_local gives each worker its own copies (no
+        // sharing, no lock), matching the eval_scratch buffers below.
+        thread_local Tensor<double> phi[NDIM];
+        thread_local int phi_k = -1;
+        if (phi_k != k) {
+            for (std::size_t i=0; i<NDIM; ++i) phi[i] = Tensor<double>(long(k), 1L);
+            phi_k = k;
         }
+        for (std::size_t i=0; i<NDIM; ++i)
+            legendre_scaling_functions(x[i], k, phi[i].ptr());
 
-        const tensorT result = general_transform(c, phi);
-        const T sum = result.ptr()[0];
+        typedef TENSOR_RESULT_TYPE(T,double) evalR;
+        auto [ws, res] = madness::detail::eval_scratch<evalR>(c.size());
+        general_fast_transform(c, phi, res, ws);
+        const T sum = res.ptr()[0];
 
         // exp2 replaces pow for the level-scaling; cell volume computed once per call.
         const double inv_sqrt_cell_vol = 1.0/std::sqrt(FunctionDefaults<NDIM>::get_cell_volume());
