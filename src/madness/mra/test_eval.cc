@@ -322,7 +322,7 @@ double eval_cube_sep_3d(int k, const Tensor<double>& c, double px[][MAXK]) {
 
 } // namespace
 
-int test_contraction_micro(World& world) {
+int test_contraction_micro() {
     test_output t("eval_cube: separated contraction agrees with nested-loop reference");
 
     std::mt19937_64 rng(0xC0FFEE42);
@@ -395,7 +395,7 @@ int test_contraction_micro(World& world) {
 // Function build needed, so the full NDIM range including 6 is fast.
 // ---------------------------------------------------------------------------
 
-int test_scaling_factor(World& world) {
+int test_scaling_factor() {
     test_output t("eval_cube scaling: exp2 agrees with pow over all (NDIM,n)");
 
     for (int ndim = 1; ndim <= 6; ++ndim) {
@@ -521,6 +521,97 @@ int test_golden_values(World& world) {
 }
 
 // ---------------------------------------------------------------------------
+// Micro-test: general_fast_transform agrees with general_transform
+// Verifies ping-pong parity (D odd / D even), rectangular c[d] (k×1),
+// and thread-local scratch reuse across multiple calls on the same buffer.
+// ---------------------------------------------------------------------------
+
+namespace {
+
+template <std::size_t D>
+int fast_vs_general_ndim(int k) {
+    test_output t("general_fast_transform D=" + std::to_string(D)
+                  + " k=" + std::to_string(k));
+
+    std::mt19937_64 rng(0xBEEF0000 + D * 100 + k);
+    std::uniform_real_distribution<double> dist(-1.0, 1.0);
+
+    // Build a random k^D coefficient tensor.
+    long dims[D];
+    for (std::size_t d = 0; d < D; ++d) dims[d] = k;
+    Tensor<double> coeff(D, dims);
+    for (long i = 0; i < coeff.size(); ++i) coeff.ptr()[i] = dist(rng);
+
+    // Build per-axis rank-1 matrices (k×1) with random values.
+    Tensor<double> phi[D];
+    for (std::size_t d = 0; d < D; ++d) {
+        phi[d] = Tensor<double>(long(k), 1L);
+        for (int p = 0; p < k; ++p) phi[d].ptr()[p] = dist(rng);
+    }
+
+    // Reference: general_transform (allocating baseline).
+    Tensor<double> ref = general_transform(coeff, phi);
+    double ref_val = ref.ptr()[0];
+
+    // Test: general_fast_transform with caller-owned buffers.
+    Tensor<double> result(coeff.size()), workspace(coeff.size());
+    general_fast_transform(coeff, phi, result, workspace);
+    double fast_val = result.ptr()[0];
+
+    double err = std::abs(fast_val - ref_val);
+    double tol = std::max(std::abs(ref_val) * 1e-13, 1e-15);
+    t.checkpoint(err <= tol, "caller-owned buffers");
+
+    // Test: general_fast_transform via thread-local scratch (detail::eval_scratch).
+    {
+        auto [ws, res] = madness::detail::eval_scratch<double>(coeff.size());
+        general_fast_transform(coeff, phi, res, ws);
+        double tl_val = res.ptr()[0];
+        double terr = std::abs(tl_val - ref_val);
+        t.checkpoint(terr <= tol, "thread-local scratch");
+    }
+
+    // Second call — scratch is warm; result must still be correct.
+    {
+        // Use different random coeff to confirm scratch is not stale.
+        for (long i = 0; i < coeff.size(); ++i) coeff.ptr()[i] = dist(rng);
+        for (std::size_t d = 0; d < D; ++d)
+            for (int p = 0; p < k; ++p) phi[d].ptr()[p] = dist(rng);
+
+        Tensor<double> ref2 = general_transform(coeff, phi);
+        double ref2_val = ref2.ptr()[0];
+
+        auto [ws2, res2] = madness::detail::eval_scratch<double>(coeff.size());
+        general_fast_transform(coeff, phi, res2, ws2);
+        double tl2_val = res2.ptr()[0];
+        double terr2 = std::abs(tl2_val - ref2_val);
+        double tol2 = std::max(std::abs(ref2_val) * 1e-13, 1e-15);
+        t.checkpoint(terr2 <= tol2, "thread-local scratch reuse");
+    }
+
+    return t.end();
+}
+
+} // namespace
+
+int test_general_fast_transform() {
+    int errors = 0;
+    // Odd D=1,3 exercises the D&1 parity swap (result/workspace pointer swap).
+    // Even D=2,6 exercises the other branch.
+    errors += fast_vs_general_ndim<1>(5);
+    errors += fast_vs_general_ndim<1>(8);
+    errors += fast_vs_general_ndim<2>(5);
+    errors += fast_vs_general_ndim<2>(8);
+    errors += fast_vs_general_ndim<3>(5);
+    errors += fast_vs_general_ndim<3>(8);
+    if (run_heavy) {
+        errors += fast_vs_general_ndim<6>(5);
+        errors += fast_vs_general_ndim<6>(8);
+    }
+    return errors;
+}
+
+// ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
 
@@ -531,8 +622,9 @@ int main(int argc, char** argv) {
     int errors = 0;
 
     // Micro-tests: cheap, always run (full NDIM range for scaling factor).
-    errors += test_contraction_micro(world);
-    errors += test_scaling_factor(world);
+    errors += test_contraction_micro();
+    errors += test_scaling_factor();
+    errors += test_general_fast_transform();
 
     // Correctness matrix: NDIM=1,2,3 (light cells always; heavy cells gated).
     errors += test_correctness_ndim<1>(world);
