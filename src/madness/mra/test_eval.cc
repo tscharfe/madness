@@ -16,6 +16,7 @@
 #include <madness/tensor/tensor.h>
 
 #include <array>
+#include <chrono>
 #include <cmath>
 #include <cstdlib>
 #include <random>
@@ -612,6 +613,205 @@ int test_general_fast_transform() {
 }
 
 // ---------------------------------------------------------------------------
+// Batched eval_local_only (P1)
+// The batched, descend-once-per-leaf-box form must reproduce the per-point
+// path *bit-for-bit* (it reuses the identical eval_cube on the identical leaf
+// coefficient tensor) and preserve the "exactly one rank owns each in-domain
+// point" invariant.  Points are deliberately clustered so that several share a
+// leaf box, exercising the bucketing.
+// ---------------------------------------------------------------------------
+template <std::size_t NDIM>
+int run_batched_cell(World& world, const std::string& label, int k, double thresh,
+                     double L, const std::vector<Vector<double, NDIM>>& user_pts) {
+    test_output t(label);
+    typedef std::shared_ptr<FunctionFunctorInterface<double, NDIM>> functorT;
+
+    FunctionDefaults<NDIM>::set_k(k);
+    FunctionDefaults<NDIM>::set_thresh(thresh);
+    FunctionDefaults<NDIM>::set_cubic_cell(-L, L);
+    FunctionDefaults<NDIM>::set_refine(true);
+    FunctionDefaults<NDIM>::set_initial_level(2);
+    world.gop.fence();
+
+    Vector<double, NDIM> center;
+    for (std::size_t d = 0; d < NDIM; ++d) center[d] = 0.3 * (d % 2 == 0 ? 1.0 : -1.0);
+    functorT functor(new Gaussian<double, NDIM>(center, 1.0, 1.0));
+    Function<double, NDIM> f = FunctionFactory<double, NDIM>(world).functor(functor);
+    f.reconstruct();
+    world.gop.fence();
+
+    Level maxlevel = static_cast<Level>(f.max_local_depth());
+
+    // Per-point reference.
+    std::vector<std::pair<bool, double>> ref;
+    ref.reserve(user_pts.size());
+    for (const auto& xu : user_pts) ref.push_back(f.eval_local_only(xu, maxlevel));
+
+    // Batched.
+    std::vector<std::pair<bool, double>> bat = f.eval_local_only(user_pts, maxlevel);
+
+    t.checkpoint(bat.size() == user_pts.size(), "batched size matches " + label);
+
+    for (std::size_t i = 0; i < user_pts.size(); ++i) {
+        bool same_flag = bat[i].first == ref[i].first;
+        // Bit-for-bit value match when local (batched reuses the same eval_cube).
+        bool same_val = (!bat[i].first) || (bat[i].second == ref[i].second);
+        t.checkpoint(same_flag && same_val,
+                     "batched == per-point for point " + std::to_string(i) + " " + label);
+
+        int total = bat[i].first ? 1 : 0;
+        world.gop.sum(total);
+        world.gop.fence();
+        t.checkpoint(total == 1,
+                     "exactly one rank owns batched point " + std::to_string(i) + " " + label);
+    }
+
+    world.gop.fence();
+    return t.end();
+}
+
+template <std::size_t NDIM>
+int test_batched_ndim(World& world) {
+    int errors = 0;
+    const double L = 2.0;
+
+    Tensor<double> cell(NDIM, 2);
+    for (std::size_t d = 0; d < NDIM; ++d) { cell(d, 0) = -L; cell(d, 1) = L; }
+
+    // Scattered points across the domain ...
+    auto scattered = random_sim_points<NDIM>(20, 0xBA7C4ED0 + NDIM);
+    // ... plus a tight cluster guaranteed to share leaf boxes.
+    {
+        std::mt19937_64 rng(0x5EED + NDIM);
+        std::uniform_real_distribution<double> jitter(0.0, 1e-3);
+        for (int c = 0; c < 8; ++c) {
+            Vector<double, NDIM> p;
+            for (std::size_t d = 0; d < NDIM; ++d) p[d] = 0.51 + jitter(rng);
+            scattered.push_back(p);
+        }
+    }
+
+    std::vector<Vector<double, NDIM>> user_pts;
+    user_pts.reserve(scattered.size());
+    for (const auto& ps : scattered) user_pts.push_back(sim_to_user<NDIM>(ps, cell));
+
+    struct Cell { int k; double thresh; };
+    static const Cell cells[] = {{7, 1e-3}, {8, 1e-5}};
+    for (const auto& c : cells) {
+        std::string base = "batched NDIM=" + std::to_string(NDIM)
+                         + " k=" + std::to_string(c.k);
+        errors += run_batched_cell<NDIM>(world, base, c.k, c.thresh, L, user_pts);
+    }
+    return errors;
+}
+
+// ---------------------------------------------------------------------------
+// Benchmark harness (P4): single-point vs batched eval_local_only.
+//
+// NOT a CTest entry: only runs when MADNESS_BENCH_EVAL is set, so the
+// registered `./test_eval` run never touches it.  Reports ns/eval for the
+// per-point path and the batched path at the current MAD_NUM_THREADS; run it
+// repeatedly with MAD_NUM_THREADS in {1,2,4,8} to capture the scaling curve.
+// Points are clustered so many share a leaf box -- the regime where amortising
+// the descent (batched) is expected to pay.
+// ---------------------------------------------------------------------------
+
+static const bool run_bench =
+    (std::getenv("MADNESS_BENCH_EVAL") != nullptr);
+
+template <std::size_t NDIM>
+void bench_cell(World& world, int k) {
+    typedef std::shared_ptr<FunctionFunctorInterface<double, NDIM>> functorT;
+    const double L = 2.0;
+    FunctionDefaults<NDIM>::set_k(k);
+    FunctionDefaults<NDIM>::set_thresh(1e-6);
+    FunctionDefaults<NDIM>::set_cubic_cell(-L, L);
+    FunctionDefaults<NDIM>::set_refine(true);
+    FunctionDefaults<NDIM>::set_initial_level(2);
+    world.gop.fence();
+
+    Vector<double, NDIM> center;
+    for (std::size_t d = 0; d < NDIM; ++d) center[d] = 0.0;
+    functorT functor(new Gaussian<double, NDIM>(center, 1.0, 1.0));
+    Function<double, NDIM> f = FunctionFactory<double, NDIM>(world).functor(functor);
+    f.reconstruct();
+    world.gop.fence();
+    Level maxlevel = static_cast<Level>(f.max_local_depth());
+
+    // Build a clustered point set: several clusters, many points each, so points
+    // share leaf boxes (the case batching targets).
+    Tensor<double> cell(NDIM, 2);
+    for (std::size_t d = 0; d < NDIM; ++d) { cell(d, 0) = -L; cell(d, 1) = L; }
+    const int n_clusters = (NDIM <= 3) ? 64 : 16;
+    const int per_cluster = 32;
+    std::mt19937_64 rng(0xB3C4 + NDIM * 100 + k);
+    std::uniform_real_distribution<double> c0(0.05, 0.95), jit(0.0, 2e-3);
+    std::vector<Vector<double, NDIM>> pts;
+    pts.reserve(n_clusters * per_cluster);
+    for (int c = 0; c < n_clusters; ++c) {
+        Vector<double, NDIM> base;
+        for (std::size_t d = 0; d < NDIM; ++d) base[d] = c0(rng);
+        for (int j = 0; j < per_cluster; ++j) {
+            Vector<double, NDIM> ps;
+            for (std::size_t d = 0; d < NDIM; ++d) ps[d] = std::min(0.99, base[d] + jit(rng));
+            pts.push_back(sim_to_user<NDIM>(ps, cell));
+        }
+    }
+    const std::size_t npt = pts.size();
+
+    // Count locally-owned points (only those do real work).
+    auto warm = f.eval_local_only(pts, maxlevel);
+    std::size_t nlocal = 0;
+    for (const auto& r : warm) if (r.first) ++nlocal;
+    if (nlocal == 0) return;
+
+    using clock = std::chrono::steady_clock;
+    const int reps = 20;
+
+    // Per-point path.
+    volatile double sink = 0.0;
+    auto t0 = clock::now();
+    for (int r = 0; r < reps; ++r)
+        for (const auto& xu : pts) {
+            auto pr = f.eval_local_only(xu, maxlevel);
+            if (pr.first) sink += pr.second;
+        }
+    auto t1 = clock::now();
+
+    // Batched path.
+    auto t2 = clock::now();
+    for (int r = 0; r < reps; ++r) {
+        auto br = f.eval_local_only(pts, maxlevel);
+        for (const auto& pr : br) if (pr.first) sink += pr.second;
+    }
+    auto t3 = clock::now();
+    (void)sink;
+
+    double ns_pp  = std::chrono::duration<double, std::nano>(t1 - t0).count() / (reps * nlocal);
+    double ns_bat = std::chrono::duration<double, std::nano>(t3 - t2).count() / (reps * nlocal);
+
+    if (world.rank() == 0) {
+        std::printf("  NDIM=%zu k=%2d  npts=%zu local=%zu  per-point=%8.1f ns/eval  "
+                    "batched=%8.1f ns/eval  speedup=%5.2fx\n",
+                    NDIM, k, npt, nlocal, ns_pp, ns_bat,
+                    ns_bat > 0 ? ns_pp / ns_bat : 0.0);
+        std::fflush(stdout);
+    }
+}
+
+void run_benchmark(World& world) {
+    if (world.rank() == 0) {
+        const char* nt = std::getenv("MAD_NUM_THREADS");
+        std::printf("eval_local_only benchmark (MAD_NUM_THREADS=%s, nranks=%d)\n",
+                    nt ? nt : "default", world.size());
+    }
+    bench_cell<3>(world, 8);
+    bench_cell<3>(world, 10);
+    bench_cell<6>(world, 8);
+    bench_cell<6>(world, 10);
+}
+
+// ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
 
@@ -638,6 +838,14 @@ int main(int argc, char** argv) {
 
     // Golden-value characterization.
     errors += test_golden_values(world);
+
+    // Batched eval_local_only (P1): NDIM=1,2,3.
+    errors += test_batched_ndim<1>(world);
+    errors += test_batched_ndim<2>(world);
+    errors += test_batched_ndim<3>(world);
+
+    // Benchmark harness (P4): opt-in only, never part of the CTest run.
+    if (run_bench) run_benchmark(world);
 
     world.gop.fence();
     madness::finalize();
