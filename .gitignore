@@ -1,5 +1,4 @@
-build*
-cmake-build-debug*
+*build*/
 .history*
 
 # Compiled Object files
