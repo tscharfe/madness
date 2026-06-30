@@ -593,6 +593,11 @@ namespace madness {
 
 
         /// Returns the maximum local depth of the function tree ... no communications
+
+        /// This is the value to pass as \c maxlevel to eval_local_only: it bounds the
+        /// descent to the deepest leaf actually held on this rank.  Passing a larger
+        /// bound (e.g. Level::max()) only makes a missing/remote point descend through
+        /// empty levels doing owner() checks that never match -- pure overhead.
         std::size_t max_local_depth() const {
             PROFILE_MEMBER_FUNC(Function);
             if (!impl) return 0;
