@@ -268,6 +268,47 @@ namespace madness {
             return impl->eval_local_only(xsim,maxlevel);
         }
 
+        /// Batched eval_local_only: evaluate many points, sharing one descent per leaf box
+
+        /// Returns one (local?,value) pair per input point, in input order: (true,value)
+        /// if the point is owned locally, otherwise (false,0.0).  Points that fall in the
+        /// same leaf box are descended once and share a single coefficient fetch, so this
+        /// amortises the per-point tree descent that dominates when many quadrature points
+        /// cluster in the same box.  Results are bit-for-bit identical to calling the
+        /// single-point eval_local_only on each point.  No communications.
+        ///
+        /// maxlevel is the maximum depth to search down to --- the max local depth can be
+        /// computed with max_local_depth();
+        std::vector<std::pair<bool,T>> eval_local_only(const std::vector<coordT>& xuser, Level maxlevel) const {
+            const double eps=1e-15;
+            verify();
+            MADNESS_ASSERT(is_reconstructed());
+            std::vector<coordT> xsim(xuser.size());
+            for (std::size_t ip=0; ip<xuser.size(); ++ip) {
+                coordT xs;
+                user_to_sim(xuser[ip],xs);
+                // If on the boundary, move the point just inside the volume so the
+                // evaluation logic does not fail (matches the single-point path).
+                for (std::size_t d=0; d<NDIM; ++d) {
+                    if (xs[d] < -eps) {
+                        MADNESS_EXCEPTION("eval: coordinate lower-bound error in dimension", d);
+                    }
+                    else if (xs[d] < eps) {
+                        xs[d] = eps;
+                    }
+
+                    if (xs[d] > 1.0+eps) {
+                        MADNESS_EXCEPTION("eval: coordinate upper-bound error in dimension", d);
+                    }
+                    else if (xs[d] > 1.0-eps) {
+                        xs[d] = 1.0-eps;
+                    }
+                }
+                xsim[ip] = xs;
+            }
+            return impl->eval_local_only(xsim,maxlevel);
+        }
+
         /// Only the invoking process will receive the result via the future
         /// though other processes may be involved in the evaluation.
         ///

@@ -2923,6 +2923,69 @@ namespace madness {
     }
 
     template <typename T, std::size_t NDIM>
+    std::vector<std::pair<bool,T>>
+    FunctionImpl<T,NDIM>::eval_local_only(const std::vector<Vector<double,NDIM>>& xin, Level maxlevel) {
+        const std::size_t npt = xin.size();
+        std::vector<std::pair<bool,T>> results(npt, std::pair<bool,T>(false,T(0)));
+        const ProcessID me = world.rank();
+
+        // Phase 1: descend each point to its owning leaf key once, bucketing
+        // point indices by that key and recording the point's coordinates within
+        // the leaf box.  This is the same descent as the single-point path
+        // (mraimpl.h eval_local_only above) -- owner()+find()+Future, no
+        // const_accessor (owl Finding 1: const_accessor doubles NUMA descent).
+        // unordered_map (hashed on Key::hash()) keeps the per-point bucketing
+        // O(1): the descent it amortises is the cost, the bucketing must not be.
+        struct KeyHash { std::size_t operator()(const keyT& k) const { return k.hash(); } };
+        std::unordered_map<keyT, std::vector<std::size_t>, KeyHash> buckets;
+        std::vector<Vector<double,NDIM>> local_x(npt);
+
+        for (std::size_t ip=0; ip<npt; ++ip) {
+            Vector<double,NDIM> x = xin[ip];
+            keyT key(0);
+            Vector<Translation,NDIM> l = key.translation();
+            while (key.level() <= maxlevel) {
+                if (coeffs.owner(key) == me) {
+                    typename dcT::futureT fut = coeffs.find(key);
+                    typename dcT::iterator it = fut.get();
+                    if (it != coeffs.end()) {
+                        nodeT& node = it->second;
+                        if (node.has_coeff()) {
+                            buckets[key].push_back(ip);
+                            local_x[ip] = x;
+                            break;
+                        }
+                    }
+                }
+                for (std::size_t i=0; i<NDIM; ++i) {
+                    double xi = x[i]*2.0;
+                    int li = int(xi);
+                    if (li == 2) li = 1;
+                    x[i] = xi - li;
+                    l[i] = 2*l[i] + li;
+                }
+                key = keyT(key.level()+1,l);
+            }
+        }
+
+        // Phase 2: per occupied leaf box, fetch the coefficient tensor once and
+        // evaluate every point that landed in it with the identical eval_cube.
+        for (const auto& kv : buckets) {
+            const keyT& key = kv.first;
+            typename dcT::iterator it = coeffs.find(key).get();
+            // key was just descended to on this rank with has_coeff(); since no
+            // fence intervenes the node is still present and local.
+            const tensorT c = it->second.coeff().full_tensor();
+            const Level n = key.level();
+            for (std::size_t ip : kv.second) {
+                Vector<double,NDIM> x = local_x[ip];
+                results[ip] = std::pair<bool,T>(true, eval_cube(n, x, c));
+            }
+        }
+        return results;
+    }
+
+    template <typename T, std::size_t NDIM>
     void FunctionImpl<T,NDIM>::evaldepthpt(const Vector<double,NDIM>& xin,
                                            const keyT& keyin,
                                            const typename Future<Level>::remote_refT& ref) {
