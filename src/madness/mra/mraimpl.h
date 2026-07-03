@@ -40,6 +40,7 @@
 #include <memory>
 #include <math.h>
 #include <cmath>
+#include <unordered_map>
 #include <madness/world/world_object.h>
 #include <madness/world/worlddc.h>
 #include <madness/world/worldhashmap.h>
