@@ -2027,15 +2027,11 @@ namespace madness {
         PROFILE_MEMBER_FUNC(FunctionImpl);
         const int k = cdata.k;
 
-        // Fully separated contraction.  The evaluation
-        //     v = sum_{p,q,...} c[p,q,...] phi_p(x0) phi_q(x1) ...
-        // is a separable tensor contraction, so build one rank-1 (k x 1) "matrix"
-        // of scaling-function values per dimension and feed them to
-        // general_fast_transform.  This is the innermost per-point path, so the
-        // (k x 1) phi matrices live in thread-local scratch reused across calls:
-        // they are reallocated only when k changes, keeping the hot path
-        // allocation-free.  thread_local gives each worker its own copies (no
-        // sharing, no lock), matching the eval_scratch buffers below.
+        // v = sum_{p,q,...} c[p,q,...] phi_p(x0) phi_q(x1) ... is a separable
+        // contraction, so feed one rank-1 (k x 1) matrix of scaling-function values
+        // per dimension to general_fast_transform.  This is the innermost per-point
+        // path, so the phi matrices are thread_local and reallocated only when k
+        // changes, keeping the hot path allocation-free with no sharing or locking.
         thread_local Tensor<double> phi[NDIM];
         thread_local int phi_k = -1;
         if (phi_k != k) {
@@ -2046,13 +2042,12 @@ namespace madness {
             legendre_scaling_functions(x[i], k, phi[i].ptr());
 
         typedef TENSOR_RESULT_TYPE(T,double) evalR;
-        // structured binding copies reference members so ws/res alias the
-        // thread_local scratch tensors directly
+        // ws/res are references bound to the thread_local scratch tensors.
         auto [ws, res] = madness::detail::eval_scratch<evalR>(c.size());
         general_fast_transform(c, phi, res, ws);
         const T sum = res.ptr()[0];
 
-        // exp2 replaces pow for the level-scaling; cell volume computed once per call.
+        // std::exp2 is faster than pow for the 2^(NDIM*n/2) level scaling.
         const double inv_sqrt_cell_vol = 1.0/std::sqrt(FunctionDefaults<NDIM>::get_cell_volume());
         return sum * std::exp2(0.5*NDIM*n) * inv_sqrt_cell_vol;
     }
@@ -2932,13 +2927,12 @@ namespace madness {
         std::vector<std::pair<bool,T>> results(npt, std::pair<bool,T>(false,T(0)));
         const ProcessID me = world.rank();
 
-        // Phase 1: descend each point to its owning leaf key once, bucketing
-        // point indices by that key and recording the point's coordinates within
-        // the leaf box.  This is the same descent as the single-point path
-        // (mraimpl.h eval_local_only above) -- owner()+find()+Future, no
-        // const_accessor (owl Finding 1: const_accessor doubles NUMA descent).
-        // unordered_map (hashed on Key::hash()) keeps the per-point bucketing
-        // O(1): the descent it amortises is the cost, the bucketing must not be.
+        // Group points by the leaf box that owns them so each box is descended to
+        // and fetched only once.  Descending uses the same owner()+find()+Future
+        // walk as the single-point path above rather than a const_accessor, which
+        // would double the NUMA cost of the descent.  Grouping must stay cheap
+        // relative to the descent it amortises, so buckets is hashed O(1) on
+        // Key::hash().  local_x holds each point's coordinates within its leaf box.
         struct KeyHash { std::size_t operator()(const keyT& k) const { return k.hash(); } };
         std::unordered_map<keyT, std::vector<std::size_t>, KeyHash> buckets;
         std::vector<Vector<double,NDIM>> local_x(npt);
@@ -2971,8 +2965,8 @@ namespace madness {
             }
         }
 
-        // Phase 2: per occupied leaf box, fetch the coefficient tensor once and
-        // evaluate every point that landed in it with the identical eval_cube.
+        // Evaluate each box's points against its single fetched coefficient tensor,
+        // using the same eval_cube as the single-point path so results are identical.
         for (const auto& kv : buckets) {
             const keyT& key = kv.first;
             typename dcT::iterator it = coeffs.find(key).get();

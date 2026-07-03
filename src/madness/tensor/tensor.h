@@ -2504,47 +2504,36 @@ MADNESS_PRAGMA_GCC(diagnostic pop)
     ///
     /// Computes, with no internal allocation,
     ///   result(i,j,...) <-- sum(i',j',...) t(i',j',...) c[0](i',i) c[1](j',j) ...
-    /// like general_transform, but the caller provides result and workspace so they
-    /// can be reused across many calls. Both buffers must be contiguous and each at
-    /// least as large as the largest intermediate the contraction produces — i.e.
-    /// max over steps d of the running element count after step d. For non-expanding
-    /// matrices (every c[d].dim(1) <= c[d].dim(0)) that maximum is just t.size(), but
-    /// an expanding axis (m_d > k, e.g. coeffs2values with npt > k) can grow it past
-    /// t.size(), so size to the true maximum, not t.size(). c[d] may be rectangular
-    /// (k x m_d); c[d].dim(0) must equal the corresponding dim of t. Performs no
-    /// communication; safe to call from any task-pool worker thread provided result
-    /// and workspace are not shared between concurrently running calls.
+    /// like general_transform, but the caller supplies result and workspace so they
+    /// can be reused across many calls. Both must be contiguous and at least as large
+    /// as the biggest intermediate the contraction produces. That is t.size() when no
+    /// axis expands, but an expanding matrix (c[d].dim(1) > c[d].dim(0), e.g.
+    /// coeffs2values with npt > k) can grow it larger, so size to the running maximum,
+    /// not t.size(). c[d] may be rectangular; c[d].dim(0) must equal dim d of t.
+    /// t, result and workspace must be distinct: the contraction ping-pongs between
+    /// result and workspace and mTxmq cannot alias its source and destination.
+    /// No communication; safe on any worker thread as long as result and workspace
+    /// are not shared between concurrent calls.
     ///
-    /// The input, result and workspace tensors must be distinct: the contraction
-    /// ping-pongs between result and workspace and each step feeds mTxmq, which
-    /// does not tolerate an aliased source and destination.
-    ///
-    /// Type constraint: instantiate only for pairs where TENSOR_RESULT_TYPE(T,Q)
-    /// == T (i.e. the matrix type Q does not promote the result past the tensor
-    /// type T). That covers every (T,double) the eval path needs, including
-    /// (double_complex,double). It excludes real-tensor x complex-matrix pairs
-    /// such as (double,double_complex), which the eval path never uses and which
-    /// can hit a missing cblas mixed-type gemm under MKL. See Task 2 for the list.
+    /// Instantiate only where TENSOR_RESULT_TYPE(T,Q) == T (the matrix type Q does not
+    /// promote the result). This covers every (T,double) the eval path needs; it
+    /// excludes real-tensor x complex-matrix pairs like (double,double_complex), which
+    /// lower to a mixed-type cblas gemm that MKL is missing.
     template <class T, class Q>
     Tensor<TENSOR_RESULT_TYPE(T,Q)>&
     general_fast_transform(const Tensor<T>& t, const Tensor<Q>* c,
                            Tensor<TENSOR_RESULT_TYPE(T,Q)>& result,
                            Tensor<TENSOR_RESULT_TYPE(T,Q)>& workspace) {
         typedef TENSOR_RESULT_TYPE(T,Q) R;
-        // The matrix type Q must not promote the result past T; otherwise the
-        // contraction lowers to a mixed-type cblas gemm that MKL is missing (see
-        // the tempspec instantiation list). Excluded pairs (e.g. (double,
-        // double_complex)) would compile by implicit instantiation and hit that
-        // gemm — fail loudly at the call site instead.
+        // Excluded pairs would compile by implicit instantiation and then hit the
+        // missing mixed-type gemm; fail loudly here instead (see the doc comment).
         static_assert(std::is_same<TENSOR_RESULT_TYPE(T,Q), T>::value,
                       "general_fast_transform requires the matrix type not to "
-                      "promote the result; see the tempspec instantiation list");
+                      "promote the result past the tensor type");
         MADNESS_CHECK(result.iscontiguous() && workspace.iscontiguous());
-        // t, result, and workspace must be distinct: the step loop ping-pongs
-        // between result and workspace and each mTxmq requires its source and
-        // destination to not alias. Catches the realistic accident of reusing
-        // one scratch tensor for two arguments (exact base-pointer aliasing);
-        // arbitrary partial overlap is the caller's responsibility.
+        // Catch the realistic accident of reusing one scratch tensor for two
+        // arguments (exact base-pointer aliasing); arbitrary partial overlap is
+        // the caller's responsibility.
         MADNESS_CHECK(result.ptr() != workspace.ptr());
         MADNESS_CHECK(t.ptr() != result.ptr() && t.ptr() != workspace.ptr());
 

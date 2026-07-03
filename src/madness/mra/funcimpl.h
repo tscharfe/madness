@@ -3411,15 +3411,13 @@ template<size_t NDIM>
 
         /// Batched eval_local_only: evaluate many points sharing one descent per leaf box
 
-        /// Returns one (local?,value) pair per input point, in input order.  Each
-        /// point is descended to its owning leaf key once; points are then bucketed
-        /// by leaf key so the leaf coefficient tensor is fetched a single time per
-        /// box and reused across every point that lands in it.  This amortises the
-        /// O(maxlevel) descent (hash probe per level) over all points in a box --
-        /// the descent, not eval_cube, dominates when many quadrature points share
-        /// boxes.  Each point's value is computed with the identical eval_cube on the
-        /// identical leaf tensor, so results are bit-for-bit equal to calling the
-        /// single-point eval_local_only per point.  No communications.
+        /// Returns one (local?,value) pair per input point, in input order.  Points
+        /// are bucketed by owning leaf key so each box is descended to and its
+        /// coefficient tensor fetched only once, then reused for every point that
+        /// lands in it.  This amortises the O(maxlevel) descent, which dominates
+        /// eval_cube when many quadrature points share boxes.  Each point is then
+        /// evaluated by the same eval_cube on the same tensor as the single-point
+        /// path, so results are bit-for-bit identical.  No communications.
         /// maxlevel is the maximum depth to search down to --- the max local depth can
         /// be computed with max_local_depth();
         std::vector<std::pair<bool,T>>
