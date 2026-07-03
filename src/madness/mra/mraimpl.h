@@ -2975,8 +2975,7 @@ namespace madness {
         for (const auto& kv : buckets) {
             const keyT& key = kv.first;
             typename dcT::iterator it = coeffs.find(key).get();
-            // key was just descended to on this rank with has_coeff(); since no
-            // fence intervenes the node is still present and local.
+            if (it == coeffs.end() || !it->second.has_coeff()) continue;
             const tensorT c = it->second.coeff().full_tensor();
             const Level n = key.level();
             for (std::size_t ip : kv.second) {
