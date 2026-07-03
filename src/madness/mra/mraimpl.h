@@ -2045,6 +2045,8 @@ namespace madness {
             legendre_scaling_functions(x[i], k, phi[i].ptr());
 
         typedef TENSOR_RESULT_TYPE(T,double) evalR;
+        // structured binding copies reference members so ws/res alias the
+        // thread_local scratch tensors directly
         auto [ws, res] = madness::detail::eval_scratch<evalR>(c.size());
         general_fast_transform(c, phi, res, ws);
         const T sum = res.ptr()[0];
