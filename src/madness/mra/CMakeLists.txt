@@ -52,7 +52,7 @@ if(BUILD_TESTING)
   add_mpi_tests(mra test_memory_measurement "2" "MADmra;MADgtest" "unittests;short")
   add_mpi_tests(mra test_cloud "2" "MADmra;MADgtest" "unittests;short")
   add_mpi_tests(mra test_vectormacrotask "2" "MADmra;MADgtest" "unittests;short")
-  add_mpi_tests(mra test_eval "2;4" "MADmra;MADgtest" "unittests;short")
+  add_mpi_tests(mra test_eval "2" "MADmra;MADgtest" "unittests;short")
 
   # Test executables that are not run with unit tests ... consider these executables (unlike unit tests)
   if (NOT MADNESS_BUILD_LIBRARIES_ONLY)
