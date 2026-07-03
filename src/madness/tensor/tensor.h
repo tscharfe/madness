@@ -2515,6 +2515,10 @@ MADNESS_PRAGMA_GCC(diagnostic pop)
     /// communication; safe to call from any task-pool worker thread provided result
     /// and workspace are not shared between concurrently running calls.
     ///
+    /// The input, result and workspace tensors must be distinct: the contraction
+    /// ping-pongs between result and workspace and each step feeds mTxmq, which
+    /// does not tolerate an aliased source and destination.
+    ///
     /// Type constraint: instantiate only for pairs where TENSOR_RESULT_TYPE(T,Q)
     /// == T (i.e. the matrix type Q does not promote the result past the tensor
     /// type T). That covers every (T,double) the eval path needs, including
@@ -2536,6 +2540,13 @@ MADNESS_PRAGMA_GCC(diagnostic pop)
                       "general_fast_transform requires the matrix type not to "
                       "promote the result; see the tempspec instantiation list");
         MADNESS_CHECK(result.iscontiguous() && workspace.iscontiguous());
+        // t, result, and workspace must be distinct: the step loop ping-pongs
+        // between result and workspace and each mTxmq requires its source and
+        // destination to not alias. Catches the realistic accident of reusing
+        // one scratch tensor for two arguments (exact base-pointer aliasing);
+        // arbitrary partial overlap is the caller's responsibility.
+        MADNESS_CHECK(result.ptr() != workspace.ptr());
+        MADNESS_CHECK(t.ptr() != result.ptr() && t.ptr() != workspace.ptr());
 
         const long D = t.ndim();
 
