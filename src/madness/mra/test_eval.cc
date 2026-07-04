@@ -807,6 +807,8 @@ void run_benchmark(World& world) {
         std::printf("eval_local_only benchmark (MAD_NUM_THREADS=%s, nranks=%d)\n",
                     nt ? nt : "default", world.size());
     }
+    bench_cell<1>(world, 8);
+    bench_cell<1>(world, 10);
     bench_cell<3>(world, 8);
     bench_cell<3>(world, 10);
     bench_cell<6>(world, 8);
