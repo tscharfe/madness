@@ -268,23 +268,27 @@ namespace madness {
             return impl->eval_local_only(xsim,maxlevel);
         }
 
-        /// Batched eval_local_only: evaluate many points, amortising the descent
+        /// Batched eval_local_only writing into a caller-provided buffer.
 
-        /// Returns one (local?,value) pair per input point, in input order: (true,value)
-        /// if the point is owned locally, otherwise (false,0.0).
+        /// Resizes results to xuser.size() (reusing its capacity) and stores one
+        /// (local?,value) pair per input point, in input order: (true,value) if
+        /// the point is owned locally, otherwise (false,0.0).
         /// Consecutive points that fall in the same leaf box share that box's
         /// descent and coefficient fetch (last-box memoization), so spatially
         /// coherent point streams (quadrature grids) amortise the per-point
         /// tree descent.  Results are bit-for-bit identical to calling the
-        /// single-point eval_local_only on each point.  No communications.
+        /// single-point eval_local_only on each point.  No communications, and
+        /// no per-call heap allocation once results has capacity.
         ///
         /// maxlevel is the maximum depth to search down to --- the max local depth can be
         /// computed with max_local_depth();
-        std::vector<std::pair<bool,T>> eval_local_only(const std::vector<coordT>& xuser, Level maxlevel) const {
+        void eval_local_only(const std::vector<coordT>& xuser, Level maxlevel,
+                             std::vector<std::pair<bool,T>>& results) const {
             const double eps=1e-15;
             verify();
             MADNESS_ASSERT(is_reconstructed());
-            std::vector<coordT> xsim(xuser.size());
+            thread_local std::vector<coordT> xsim;
+            xsim.resize(xuser.size());
             for (std::size_t ip=0; ip<xuser.size(); ++ip) {
                 coordT xs;
                 user_to_sim(xuser[ip],xs);
@@ -307,7 +311,16 @@ namespace madness {
                 }
                 xsim[ip] = xs;
             }
-            return impl->eval_local_only(xsim,maxlevel);
+            results.resize(xuser.size());
+            impl->eval_local_only(xsim.data(), xsim.size(), maxlevel, results.data());
+        }
+
+        /// Batched eval_local_only returning a fresh vector (see the
+        /// output-parameter overload above for semantics).
+        std::vector<std::pair<bool,T>> eval_local_only(const std::vector<coordT>& xuser, Level maxlevel) const {
+            std::vector<std::pair<bool,T>> results;
+            eval_local_only(xuser, maxlevel, results);
+            return results;
         }
 
         /// Only the invoking process will receive the result via the future

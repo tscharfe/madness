@@ -727,6 +727,58 @@ int test_batched_ndim(World& world) {
     return errors;
 }
 
+// Output-parameter overload: reusing one results buffer across calls of
+// different sizes must produce the same values as the vector-returning form.
+int test_output_param_overload(World& world) {
+    constexpr std::size_t NDIM = 3;
+    test_output t("output-parameter eval_local_only overload");
+    typedef std::shared_ptr<FunctionFunctorInterface<double, NDIM>> functorT;
+    const double L = 2.0;
+    FunctionDefaults<NDIM>::set_k(7);
+    FunctionDefaults<NDIM>::set_thresh(1e-5);
+    FunctionDefaults<NDIM>::set_cubic_cell(-L, L);
+    FunctionDefaults<NDIM>::set_refine(true);
+    FunctionDefaults<NDIM>::set_initial_level(2);
+    world.gop.fence();
+
+    Vector<double, NDIM> center;
+    for (std::size_t d = 0; d < NDIM; ++d) center[d] = 0.0;
+    functorT functor(new Gaussian<double, NDIM>(center, 1.0, 1.0));
+    Function<double, NDIM> f = FunctionFactory<double, NDIM>(world).functor(functor);
+    f.reconstruct();
+    world.gop.fence();
+    const Level maxlevel = static_cast<Level>(f.max_local_depth());
+
+    std::vector<Vector<double, NDIM>> pts_big, pts_small;
+    for (int i = 0; i < 40; ++i) {
+        Vector<double, NDIM> p;
+        for (std::size_t d = 0; d < NDIM; ++d)
+            p[d] = -L + 2.0*L*((i*7 + int(d)*3) % 37)/37.0;
+        pts_big.push_back(p);
+        if (i < 5) pts_small.push_back(p);
+    }
+
+    std::vector<std::pair<bool,double>> reused;
+    f.eval_local_only(pts_big, maxlevel, reused);           // fills, allocates once
+    auto ref_big = f.eval_local_only(pts_big, maxlevel);    // vector-returning form
+    bool ok = (reused.size() == ref_big.size());
+    for (std::size_t i = 0; ok && i < ref_big.size(); ++i)
+        ok = reused[i].first == ref_big[i].first &&
+             (!reused[i].first || reused[i].second == ref_big[i].second);
+    t.checkpoint(ok, "fresh results buffer matches vector-returning form");
+
+    f.eval_local_only(pts_small, maxlevel, reused);         // shrink, reuse capacity
+    auto ref_small = f.eval_local_only(pts_small, maxlevel);
+    ok = (reused.size() == ref_small.size());
+    for (std::size_t i = 0; ok && i < ref_small.size(); ++i)
+        ok = reused[i].first == ref_small[i].first &&
+             (!reused[i].first || reused[i].second == ref_small[i].second);
+    t.checkpoint(ok, "shrunk reused buffer matches vector-returning form");
+
+    world.gop.fence();
+    return t.end();
+}
+
 // ---------------------------------------------------------------------------
 // Benchmark harness (P4): single-point vs batched eval_local_only.
 //
@@ -871,6 +923,7 @@ int main(int argc, char** argv) {
     errors += test_batched_ndim<1>(world);
     errors += test_batched_ndim<2>(world);
     errors += test_batched_ndim<3>(world);
+    errors += test_output_param_overload(world);
 
     // Benchmark harness (P4): opt-in only, never part of the CTest run.
     if (run_bench) run_benchmark(world);
