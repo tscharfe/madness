@@ -2026,30 +2026,67 @@ namespace madness {
     T FunctionImpl<T,NDIM>::eval_cube(Level n, coordT& x, const tensorT& c) const {
         PROFILE_MEMBER_FUNC(FunctionImpl);
         const int k = cdata.k;
+        T sum = T(0.0);
 
         // v = sum_{p,q,...} c[p,q,...] phi_p(x0) phi_q(x1) ... is a separable
-        // contraction, so feed one rank-1 (k x 1) matrix of scaling-function values
-        // per dimension to general_fast_transform.  This is the innermost per-point
-        // path, so the phi matrices are thread_local and reallocated only when k
-        // changes, keeping the hot path allocation-free with no sharing or locking.
-        thread_local Tensor<double> phi[NDIM];
-        thread_local int phi_k = -1;
-        if (phi_k != k) {
-            for (std::size_t i=0; i<NDIM; ++i) phi[i] = Tensor<double>(long(k), 1L);
-            phi_k = k;
+        // contraction; the fastest evaluation depends on the dimension.
+        //
+        // NDIM<=2 (deep 1-D radial trees are the hottest eval workload): a
+        // factored register-resident loop.  Partial sums stay in registers, the
+        // only memory traffic is one streaming read of c, and no per-thread
+        // scratch is needed (px is <= NDIM*MAXK*8 bytes of stack).  Routing the
+        // tiny (k x 1) contraction through general_fast_transform's dispatch
+        // and ping-pong scratch measured ~20% slower at NDIM=1.
+        //
+        // NDIM>=3: general_fast_transform's staged contraction vectorizes
+        // (the factored loop's inner reduction cannot under strict FP) and
+        // measured 4-5x faster at NDIM=6; the phi matrices and scratch are
+        // thread_local, so this path stays allocation-free after warm-up.
+        if constexpr (NDIM <= 2) {
+            MADNESS_ASSERT(k <= MAXK);
+            double px[NDIM][MAXK];
+            for (std::size_t i=0; i<NDIM; ++i) legendre_scaling_functions(x[i],k,px[i]);
+
+            if constexpr (NDIM == 1) {
+                const T* cp = c.ptr();
+                for (int p=0; p<k; ++p) sum += cp[p]*px[0][p];
+            }
+            else {
+                for (int p=0; p<k; ++p) {
+                    const double a = px[0][p];
+                    const T* cq = &c(p,0);
+                    T s2 = T(0);
+                    for (int q=0; q<k; ++q) s2 += cq[q]*px[1][q];
+                    sum += a*s2;
+                }
+            }
         }
-        for (std::size_t i=0; i<NDIM; ++i)
-            legendre_scaling_functions(x[i], k, phi[i].ptr());
+        else {
+            thread_local Tensor<double> phi[NDIM];
+            thread_local int phi_k = -1;
+            if (phi_k != k) {
+                for (std::size_t i=0; i<NDIM; ++i) phi[i] = Tensor<double>(long(k), 1L);
+                phi_k = k;
+            }
+            for (std::size_t i=0; i<NDIM; ++i)
+                legendre_scaling_functions(x[i], k, phi[i].ptr());
 
-        typedef TENSOR_RESULT_TYPE(T,double) evalR;
-        // ws/res are references bound to the thread_local scratch tensors.
-        auto [ws, res] = madness::detail::eval_scratch<evalR>(c.size());
-        general_fast_transform(c, phi, res, ws);
-        const T sum = res.ptr()[0];
-
-        // std::exp2 is faster than pow for the 2^(NDIM*n/2) level scaling.
-        const double inv_sqrt_cell_vol = 1.0/std::sqrt(FunctionDefaults<NDIM>::get_cell_volume());
-        return sum * std::exp2(0.5*NDIM*n) * inv_sqrt_cell_vol;
+            typedef TENSOR_RESULT_TYPE(T,double) evalR;
+            // ws/res are references bound to the thread_local scratch tensors.
+            auto [ws, res] = madness::detail::eval_scratch<evalR>(c.size());
+            general_fast_transform(c, phi, res, ws);
+            sum = res.ptr()[0];
+        }
+        // exp2 replaces pow for the level scaling; 1/sqrt(cell_volume) is cached
+        // per thread and refreshed only if the cell changes (perf-doc change #2).
+        thread_local double cached_cell_volume = -1.0;
+        thread_local double cached_inv_sqrt_cell_vol = 0.0;
+        const double cell_volume = FunctionDefaults<NDIM>::get_cell_volume();
+        if (cell_volume != cached_cell_volume) {
+            cached_cell_volume = cell_volume;
+            cached_inv_sqrt_cell_vol = 1.0/std::sqrt(cell_volume);
+        }
+        return sum * std::exp2(0.5*NDIM*n) * cached_inv_sqrt_cell_vol;
     }
 
     template <typename T, std::size_t NDIM>
