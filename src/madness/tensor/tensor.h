@@ -2580,7 +2580,7 @@ MADNESS_PRAGMA_GCC(diagnostic pop)
     namespace detail {
         /// Thread-local grow-on-demand buffer pair for general_fast_transform.
         /// Each thread gets its own pair; pages first-touch on the calling thread's
-        /// NUMA domain. Buffers grow monotonically — sized to the largest t.size()
+        /// NUMA domain. Buffers grow monotonically — sized to the largest need
         /// seen on this thread. Never shared between threads.
         template <typename R>
         std::pair<Tensor<R>&, Tensor<R>&> eval_scratch(long need) {
