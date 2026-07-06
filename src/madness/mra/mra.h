@@ -268,13 +268,14 @@ namespace madness {
             return impl->eval_local_only(xsim,maxlevel);
         }
 
-        /// Batched eval_local_only: evaluate many points, sharing one descent per leaf box
+        /// Batched eval_local_only: evaluate many points, amortising the descent
 
         /// Returns one (local?,value) pair per input point, in input order: (true,value)
-        /// if the point is owned locally, otherwise (false,0.0).  Points that fall in the
-        /// same leaf box are descended once and share a single coefficient fetch, so this
-        /// amortises the per-point tree descent that dominates when many quadrature points
-        /// cluster in the same box.  Results are bit-for-bit identical to calling the
+        /// if the point is owned locally, otherwise (false,0.0).
+        /// Consecutive points that fall in the same leaf box share that box's
+        /// descent and coefficient fetch (last-box memoization), so spatially
+        /// coherent point streams (quadrature grids) amortise the per-point
+        /// tree descent.  Results are bit-for-bit identical to calling the
         /// single-point eval_local_only on each point.  No communications.
         ///
         /// maxlevel is the maximum depth to search down to --- the max local depth can be

@@ -15,6 +15,7 @@
 #include <madness/world/test_utilities.h>
 #include <madness/tensor/tensor.h>
 
+ #include <algorithm>
  #include <array>
  #include <chrono>
  #include <cmath>
@@ -666,6 +667,25 @@ int run_batched_cell(World& world, const std::string& label, int k, double thres
         world.gop.fence();
         t.checkpoint(total == 1,
                      "exactly one rank owns batched point " + std::to_string(i) + " " + label);
+    }
+
+    // Order-independence: shuffling the points must not change any result.
+    // (Guards the memoized-descent fast path: a stale or wrongly-matched
+    // cached leaf would show up as a value difference under reordering.)
+    {
+        std::vector<std::size_t> perm(user_pts.size());
+        for (std::size_t i = 0; i < perm.size(); ++i) perm[i] = i;
+        std::mt19937_64 rng(0x5EED);
+        std::shuffle(perm.begin(), perm.end(), rng);
+        std::vector<Vector<double, NDIM>> shuffled(user_pts.size());
+        for (std::size_t i = 0; i < perm.size(); ++i) shuffled[i] = user_pts[perm[i]];
+        auto bat_sh = f.eval_local_only(shuffled, maxlevel);
+        bool ok = (bat_sh.size() == shuffled.size());
+        for (std::size_t i = 0; ok && i < perm.size(); ++i) {
+            ok = (bat_sh[i].first == bat[perm[i]].first) &&
+                 (!bat_sh[i].first || bat_sh[i].second == bat[perm[i]].second);
+        }
+        t.checkpoint(ok, "batched results order-independent " + label);
     }
 
     world.gop.fence();

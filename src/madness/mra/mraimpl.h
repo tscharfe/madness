@@ -40,7 +40,6 @@
 #include <memory>
 #include <math.h>
 #include <cmath>
-#include <unordered_map>
 #include <madness/world/world_object.h>
 #include <madness/world/worlddc.h>
 #include <madness/world/worldhashmap.h>
@@ -2958,23 +2957,57 @@ namespace madness {
     }
 
     template <typename T, std::size_t NDIM>
-    std::vector<std::pair<bool,T>>
-    FunctionImpl<T,NDIM>::eval_local_only(const std::vector<Vector<double,NDIM>>& xin, Level maxlevel) {
-        const std::size_t npt = xin.size();
-        std::vector<std::pair<bool,T>> results(npt, std::pair<bool,T>(false,T(0)));
+    void
+    FunctionImpl<T,NDIM>::eval_local_only(const Vector<double,NDIM>* xin,
+                                          std::size_t npt, Level maxlevel,
+                                          std::pair<bool,T>* results) {
         const ProcessID me = world.rank();
 
-        // Group points by the leaf box that owns them so each box is descended to
-        // and fetched only once.  Descending uses the same owner()+find()+Future
-        // walk as the single-point path above rather than a const_accessor, which
-        // would double the NUMA cost of the descent.  Grouping must stay cheap
-        // relative to the descent it amortises, so buckets is hashed O(1) on
-        // Key::hash().  local_x holds each point's coordinates within its leaf box.
-        struct KeyHash { std::size_t operator()(const keyT& k) const { return k.hash(); } };
-        std::unordered_map<keyT, std::vector<std::size_t>, KeyHash> buckets;
-        std::vector<Vector<double,NDIM>> local_x(npt);
+        // Memoize the most recently hit leaf (key + shallow coefficient copy).
+        // Quadrature callers stream spatially coherent points, so consecutive
+        // points usually land in the same leaf box; replaying the exact
+        // coordinate-refinement arithmetic against the cached key costs a few
+        // flops per level and skips the per-level container find()s that
+        // dominate the descent.  A miss falls through to the verbatim
+        // single-point walk below (owner()+find()+Future -- no const_accessor,
+        // which doubles NUMA descent cost).  Leaves partition the domain and
+        // interior nodes of a reconstructed function hold no coeffs, so a
+        // translation match at the cached level identifies exactly the leaf the
+        // scalar descent would have stopped at: results are bit-for-bit
+        // identical to the single-point overload.  No fence intervenes within a
+        // call, so the cached node cannot be invalidated mid-call.
+        bool have_cache = false;
+        keyT cached_key;
+        tensorT cached_c;
 
         for (std::size_t ip=0; ip<npt; ++ip) {
+            results[ip] = std::pair<bool,T>(false, T(0));
+
+            if (have_cache) {
+                Vector<double,NDIM> x = xin[ip];
+                Vector<Translation,NDIM> l;
+                for (std::size_t i=0; i<NDIM; ++i) l[i] = 0;
+                const Level nl = cached_key.level();
+                for (Level nn=0; nn<nl; ++nn) {
+                    for (std::size_t i=0; i<NDIM; ++i) {
+                        double xi = x[i]*2.0;
+                        int li = int(xi);
+                        if (li == 2) li = 1;
+                        x[i] = xi - li;
+                        l[i] = 2*l[i] + li;
+                    }
+                }
+                bool same = true;
+                const Vector<Translation,NDIM>& lc = cached_key.translation();
+                for (std::size_t i=0; i<NDIM; ++i) same = same && (l[i] == lc[i]);
+                if (same) {
+                    results[ip] = std::pair<bool,T>(true, eval_cube(nl, x, cached_c));
+                    continue;
+                }
+            }
+
+            // Verbatim single-point descent (keep in sync with the scalar
+            // overload above).
             Vector<double,NDIM> x = xin[ip];
             keyT key(0);
             Vector<Translation,NDIM> l = key.translation();
@@ -2985,8 +3018,11 @@ namespace madness {
                     if (it != coeffs.end()) {
                         nodeT& node = it->second;
                         if (node.has_coeff()) {
-                            buckets[key].push_back(ip);
-                            local_x[ip] = x;
+                            cached_key = key;
+                            cached_c = node.coeff().full_tensor();
+                            have_cache = true;
+                            results[ip] = std::pair<bool,T>(true,
+                                eval_cube(key.level(), x, cached_c));
                             break;
                         }
                     }
@@ -3001,20 +3037,13 @@ namespace madness {
                 key = keyT(key.level()+1,l);
             }
         }
+    }
 
-        // Evaluate each box's points against its single fetched coefficient tensor,
-        // using the same eval_cube as the single-point path so results are identical.
-        for (const auto& kv : buckets) {
-            const keyT& key = kv.first;
-            typename dcT::iterator it = coeffs.find(key).get();
-            if (it == coeffs.end() || !it->second.has_coeff()) continue;
-            const tensorT c = it->second.coeff().full_tensor();
-            const Level n = key.level();
-            for (std::size_t ip : kv.second) {
-                Vector<double,NDIM> x = local_x[ip];
-                results[ip] = std::pair<bool,T>(true, eval_cube(n, x, c));
-            }
-        }
+    template <typename T, std::size_t NDIM>
+    std::vector<std::pair<bool,T>>
+    FunctionImpl<T,NDIM>::eval_local_only(const std::vector<Vector<double,NDIM>>& xin, Level maxlevel) {
+        std::vector<std::pair<bool,T>> results(xin.size(), std::pair<bool,T>(false,T(0)));
+        eval_local_only(xin.data(), xin.size(), maxlevel, results.data());
         return results;
     }
 

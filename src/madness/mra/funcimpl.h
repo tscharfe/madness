@@ -3409,15 +3409,17 @@ template<size_t NDIM>
         /// computed with max_local_depth();
         std::pair<bool,T> eval_local_only(const Vector<double,NDIM>& xin, Level maxlevel) ;
 
-        /// Batched eval_local_only: evaluate many points sharing one descent per leaf box
+        /// Allocation-free core of the batched eval_local_only: writes one
+        /// (local?,value) pair per point, in input order, into results[0..npt).
+        /// Consecutive points in the same leaf box share that box's descent and
+        /// coefficient fetch (last-box memoization); each point is evaluated by
+        /// the same eval_cube on the same tensor as the single-point path, so
+        /// results are bit-for-bit identical.  No communications.
+        void eval_local_only(const Vector<double,NDIM>* xin, std::size_t npt,
+                             Level maxlevel, std::pair<bool,T>* results);
 
-        /// Returns one (local?,value) pair per input point, in input order.  Points
-        /// are bucketed by owning leaf key so each box is descended to and its
-        /// coefficient tensor fetched only once, then reused for every point that
-        /// lands in it.  This amortises the O(maxlevel) descent, which dominates
-        /// eval_cube when many quadrature points share boxes.  Each point is then
-        /// evaluated by the same eval_cube on the same tensor as the single-point
-        /// path, so results are bit-for-bit identical.  No communications.
+        /// Batched eval_local_only returning a fresh vector (see the pointer
+        /// core above for semantics).
         /// maxlevel is the maximum depth to search down to --- the max local depth can
         /// be computed with max_local_depth();
         std::vector<std::pair<bool,T>>
