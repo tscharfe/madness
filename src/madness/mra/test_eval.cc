@@ -811,8 +811,12 @@ void run_benchmark(World& world) {
     bench_cell<1>(world, 10);
     bench_cell<3>(world, 8);
     bench_cell<3>(world, 10);
-    bench_cell<6>(world, 8);
-    bench_cell<6>(world, 10);
+    // The NDIM=6 cells spend tens of minutes in tree construction at low
+    // thread counts, so they are opt-in on top of MADNESS_BENCH_EVAL.
+    if (std::getenv("MADNESS_BENCH_EVAL_6D")) {
+        bench_cell<6>(world, 8);
+        bench_cell<6>(world, 10);
+    }
 }
 
 // ---------------------------------------------------------------------------
