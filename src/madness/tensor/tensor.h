@@ -2530,7 +2530,7 @@ MADNESS_PRAGMA_GCC(diagnostic pop)
         static_assert(std::is_same<TENSOR_RESULT_TYPE(T,Q), T>::value,
                       "general_fast_transform requires the matrix type not to "
                       "promote the result past the tensor type");
-        MADNESS_CHECK(result.iscontiguous() && workspace.iscontiguous());
+        MADNESS_CHECK(t.iscontiguous() && result.iscontiguous() && workspace.iscontiguous());
         // Catch the realistic accident of reusing one scratch tensor for two
         // arguments (exact base-pointer aliasing); arbitrary partial overlap is
         // the caller's responsibility.
@@ -2546,6 +2546,8 @@ MADNESS_PRAGMA_GCC(diagnostic pop)
             long running = t.size();
             long max_running = running;
             for (long d = 0; d < D; ++d) {
+                MADNESS_CHECK(c[d].ndim() == 2 && c[d].dim(0) > 0);
+                MADNESS_CHECK(running % c[d].dim(0) == 0);
                 running = (running / c[d].dim(0)) * c[d].dim(1);
                 if (running > max_running) max_running = running;
             }
