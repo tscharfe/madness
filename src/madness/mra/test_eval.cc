@@ -15,16 +15,16 @@
 #include <madness/world/test_utilities.h>
 #include <madness/tensor/tensor.h>
 
- #include <algorithm>
- #include <array>
- #include <chrono>
- #include <cmath>
- #include <cstdio>
- #include <cstdlib>
- #include <limits>
- #include <random>
- #include <string>
- #include <vector>
+#include <algorithm>
+#include <array>
+#include <chrono>
+#include <cmath>
+#include <cstdio>
+#include <cstdlib>
+#include <limits>
+#include <random>
+#include <string>
+#include <vector>
 
 using namespace madness;
 
