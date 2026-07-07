@@ -35,6 +35,7 @@
 #include <madness/madness_config.h>
 #include <madness/misc/ran.h>
 #include <madness/world/posixmem.h>
+#include <madness/world/thread_specific.h>
 
 #include <memory>
 #include <complex>
@@ -2580,18 +2581,47 @@ MADNESS_PRAGMA_GCC(diagnostic pop)
     }
 
     namespace detail {
-        /// Thread-local grow-on-demand buffer pair for general_fast_transform.
-        /// Each thread gets its own pair; pages first-touch on the calling thread's
-        /// NUMA domain. Buffers grow monotonically — sized to the largest need
-        /// seen on this thread. Never shared between threads.
+        /// Per-thread grow-on-demand buffer pair for general_fast_transform.
+        template <typename R>
+        struct EvalScratch { Tensor<R> a, b; };
+
+        /// The function-local static pool backing eval_scratch<R>().  One pool
+        /// per result type R, shared by every FunctionImpl<T,NDIM> of that type;
+        /// its lifetime is the process, but eval_scratch_clear<R>() reclaims the
+        /// buffers on demand.
+        template <typename R>
+        thread_specific<EvalScratch<R>>& eval_scratch_pool() {
+            static thread_specific<EvalScratch<R>> pool;
+            return pool;
+        }
+
+        /// Grow-on-demand per-thread buffer pair for general_fast_transform.
+        ///
+        /// Backed by a reclaimable thread_specific pool rather than a
+        /// thread_local: the pair can grow to k^NDIM each for 6-D eval, and a
+        /// thread_local would pin that per worker thread for the life of the
+        /// thread (≈ the process) with no way to free it — bad under the
+        /// TBB/PaRSEC backends, whose arenas touch more threads than
+        /// MAD_NUM_THREADS.  eval_scratch_clear<R>() frees them.  Each thread
+        /// first-touches its own pair (NUMA-local); buffers grow monotonically
+        /// to the largest need seen on that thread.  Never shared across threads.
         template <typename R>
         std::pair<Tensor<R>&, Tensor<R>&> eval_scratch(long need) {
-            thread_local Tensor<R> a, b;
-            if (a.size() < need) {
-                a = Tensor<R>(need);
-                b = Tensor<R>(need);
+            EvalScratch<R>& s = eval_scratch_pool<R>().local();
+            if (s.a.size() < need) {
+                s.a = Tensor<R>(need);
+                s.b = Tensor<R>(need);
             }
-            return {a, b};
+            return {s.a, s.b};
+        }
+
+        /// Free every thread's general_fast_transform scratch buffers.  Call
+        /// only at a quiescent point — no eval may be in flight and no
+        /// reference returned by eval_scratch<R>() may still be in use (see
+        /// thread_specific::clear()).
+        template <typename R>
+        void eval_scratch_clear() {
+            eval_scratch_pool<R>().clear();
         }
     } // namespace detail
 
