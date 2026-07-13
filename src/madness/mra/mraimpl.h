@@ -911,8 +911,17 @@ namespace madness {
     }
 
     /// After 1d push operator must sum coeffs down the tree to restore correct scaling function coefficients
+
+    /// @warning NUMERICALLY UNSTABLE for tensor types other than TT_FULL: sum_down propagates
+    /// coefficients from the root to the leaves, and at each level the low-rank (SVD) tensor
+    /// operations (v2k construction at target thresh, unfilter, per-node add_SVD) re-truncate
+    /// the rank. These truncation errors compound multiplicatively down the tree, so a deeply
+    /// refined (e.g. cuspy) function loses ~1-2 digits relative to the TT_FULL result. Prefer a
+    /// path that avoids sum_down for TT_2D/TT_SVD where threshold-level accuracy is required.
     template <typename T, std::size_t NDIM>
     void FunctionImpl<T,NDIM>::sum_down(bool fence) {
+        if (get_tensor_type()!=TT_FULL && world.rank()==0)
+            print("WARNING: sum_down is numerically unstable for tensor type",get_tensor_type());
         tree_state=reconstructed;
         if (world.rank() == coeffs.owner(cdata.key0)) sum_down_spawn(cdata.key0, coeffT());
         if (fence) world.gop.fence();
