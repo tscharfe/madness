@@ -2065,7 +2065,7 @@ namespace madness {
         TreeState operating_state=left.get_impl()->get_tensor_type()==TT_FULL ? compressed : reconstructed;
         // no compression for high-dimensional functions
         if (operating_state==reconstructed) {
-            left.reconstruct(false);
+            left.reconstruct();
             right.reconstruct();
             return gaxpy_oop_reconstructed(1.0,left,1.0,right,true);
         } else {
