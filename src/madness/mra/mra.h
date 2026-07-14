@@ -2122,8 +2122,9 @@ namespace madness {
         if (VERIFY_TREE) left.verify_tree();
         if (VERIFY_TREE) right.verify_tree();
 
+        TreeState operating_state=left.get_impl()->get_tensor_type()==TT_FULL ? compressed : reconstructed;
         // no compression for high-dimensional functions
-        if (NDIM==6) {
+        if (operating_state==reconstructed) {
             left.reconstruct();
             right.reconstruct();
             return gaxpy_oop_reconstructed(1.0,left,1.0,right,true);
