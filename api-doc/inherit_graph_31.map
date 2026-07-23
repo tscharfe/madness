@@ -1,0 +1,283 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="Node000000" title=" " alt="" coords="31,1563,213,1589"/>
+<area shape="rect" id="Node000001" href="$classAtomicBasisFunctor.html" title=" " alt="" coords="319,1563,509,1589"/>
+<area shape="poly" id="edge4_Node000000_Node000001" title=" " alt="" coords="227,1573,318,1573,318,1579,227,1579"/>
+<area shape="rect" id="Node000032" href="$classmadness_1_1FunctionFunctorInterface.html" title="Abstract base class interface required for functors used as input to Functions." alt="" coords="26,776,218,816"/>
+<area shape="rect" id="Node000033" href="$classmadness_1_1TwoElectronInterface.html" title=" " alt="" coords="301,1153,527,1193"/>
+<area shape="poly" id="edge5_Node000032_Node000033" title=" " alt="" coords="132,829,148,895,178,979,199,1023,224,1066,254,1105,288,1139,306,1151,303,1155,285,1143,250,1109,219,1069,194,1026,173,981,143,896,127,830"/>
+<area shape="rect" id="Node000037" href="$classmadness_1_1TwoElectronInterface.html" title=" " alt="" coords="301,427,527,467"/>
+<area shape="poly" id="edge9_Node000032_Node000037" title=" " alt="" coords="128,762,146,701,177,623,198,583,223,544,252,508,285,477,304,465,306,469,288,481,256,512,227,547,203,586,182,625,151,702,133,763"/>
+<area shape="rect" id="Node000039" href="$classConstant.html" title=" " alt="" coords="333,491,495,517"/>
+<area shape="poly" id="edge11_Node000032_Node000039" title=" " alt="" coords="131,762,152,709,184,645,228,581,255,552,285,527,307,515,331,507,333,513,309,520,288,532,259,556,232,584,188,648,157,711,136,764"/>
+<area shape="rect" id="Node000040" href="$classDerivativeGaussian.html" title=" " alt="" coords="339,541,489,581"/>
+<area shape="poly" id="edge12_Node000032_Node000040" title=" " alt="" coords="138,763,162,723,195,676,237,630,285,591,310,578,337,569,339,574,313,583,288,596,240,634,200,680,167,726,143,765"/>
+<area shape="rect" id="Node000041" href="$classGaussian.html" title=" " alt="" coords="332,1514,496,1539"/>
+<area shape="poly" id="edge13_Node000032_Node000041" title=" " alt="" coords="133,829,212,1207,258,1405,276,1470,289,1500,309,1513,332,1522,331,1527,306,1518,285,1503,271,1472,253,1406,207,1209,127,830"/>
+<area shape="rect" id="Node000031" href="$classGaussianGuess.html" title="an N&#45;dimensional real&#45;valued Gaussian function" alt="" coords="320,377,508,402"/>
+<area shape="poly" id="edge14_Node000032_Node000031" title=" " alt="" coords="125,762,138,689,167,594,187,544,214,495,246,451,285,413,319,395,321,399,288,417,250,454,218,498,192,546,172,595,144,690,130,763"/>
+<area shape="rect" id="Node000042" href="$classHeElectronicChargeDensityIGuess.html" title=" " alt="" coords="314,605,514,645"/>
+<area shape="poly" id="edge15_Node000032_Node000042" title=" " alt="" coords="149,764,208,708,245,679,285,655,314,643,316,648,288,660,248,684,211,712,153,768"/>
+<area shape="rect" id="Node000043" href="$classHeNuclearChargeDensityIGuess.html" title=" " alt="" coords="299,669,529,709"/>
+<area shape="poly" id="edge16_Node000032_Node000043" title=" " alt="" coords="173,767,227,742,286,719,325,707,326,712,288,724,229,747,175,772"/>
+<area shape="rect" id="Node000044" href="$classParserHandler.html" title=" " alt="" coords="317,734,511,759"/>
+<area shape="poly" id="edge17_Node000032_Node000044" title=" " alt="" coords="231,775,338,757,339,762,232,780"/>
+<area shape="rect" id="Node000045" href="$classPyFunctor.html" title=" " alt="" coords="330,783,498,809"/>
+<area shape="poly" id="edge18_Node000032_Node000045" title=" " alt="" coords="232,793,330,793,330,799,232,799"/>
+<area shape="rect" id="Node000046" href="$classmadness_1_1CompositeFunctorInterface.html" title="CompositeFunctorInterface implements a wrapper of holding several functions and functors." alt="" coords="310,833,518,873"/>
+<area shape="poly" id="edge19_Node000032_Node000046" title=" " alt="" coords="232,815,312,831,311,836,231,820"/>
+<area shape="rect" id="Node000047" href="$classmadness_1_1ElementaryInterface.html" title="ElementaryInterface (formerly FunctorInterfaceWrapper) interfaces a c&#45;function." alt="" coords="303,897,525,937"/>
+<area shape="poly" id="edge20_Node000032_Node000047" title=" " alt="" coords="168,821,224,853,288,883,323,895,321,900,286,888,221,858,165,826"/>
+<area shape="rect" id="Node000048" href="$classmadness_1_1FunctionInterface.html" title="FunctionInterface implements a wrapper around any class with the operator()()" alt="" coords="313,961,515,1001"/>
+<area shape="poly" id="edge21_Node000032_Node000048" title=" " alt="" coords="150,825,209,888,247,920,288,947,314,959,312,964,285,952,243,924,205,891,146,829"/>
+<area shape="rect" id="Node000049" href="$classmadness_1_1FunctorInterface.html" title="FunctorInterface interfaces a class or struct with an operator()()" alt="" coords="317,1025,511,1065"/>
+<area shape="poly" id="edge22_Node000032_Node000049" title=" " alt="" coords="141,828,165,870,197,920,239,969,288,1011,317,1026,315,1031,285,1016,235,973,193,923,160,873,137,830"/>
+<area shape="rect" id="Node000050" href="$classmadness_1_1TwoElectronInterface.html" title="base class to compute the wavelet coefficients for an isotropic 2e&#45;operator" alt="" coords="301,1089,527,1129"/>
+<area shape="poly" id="edge23_Node000032_Node000050" title=" " alt="" coords="136,828,156,883,187,950,231,1018,258,1049,288,1075,308,1087,305,1092,285,1079,254,1052,227,1021,183,953,151,885,131,830"/>
+<area shape="rect" id="Node000034" href="$classmadness_1_1BSHFunctionInterface.html" title="a function like f(x) = exp(&#45;mu x)/x" alt="" coords="598,1182,827,1207"/>
+<area shape="poly" id="edge6_Node000033_Node000034" title=" " alt="" coords="541,1180,598,1184,598,1189,540,1185"/>
+<area shape="rect" id="Node000035" href="$classmadness_1_1SlaterF12Interface.html" title="a function like f(x) = (1 &#45; exp(&#45;mu x))/(2 gamma)" alt="" coords="608,1231,817,1257"/>
+<area shape="poly" id="edge7_Node000033_Node000035" title=" " alt="" coords="509,1194,542,1203,590,1216,647,1229,645,1234,589,1221,541,1208,508,1199"/>
+<area shape="rect" id="Node000036" href="$classmadness_1_1SlaterFunctionInterface.html" title="a function like f(x)=exp(&#45;mu x)" alt="" coords="593,1133,833,1158"/>
+<area shape="poly" id="edge8_Node000033_Node000036" title=" " alt="" coords="540,1159,592,1154,593,1159,541,1164"/>
+<area shape="rect" id="Node000038" href="$classmadness_1_1ElectronRepulsionInterface.html" title="a function like f(x)=1/x" alt="" coords="609,427,816,467"/>
+<area shape="poly" id="edge10_Node000037_Node000038" title=" " alt="" coords="540,444,609,444,609,449,540,449"/>
+<area shape="rect" id="Node000051" href="$classmadness_1_1GeneralTwoElectronInterface.html" title="a function like f(x)=1/x" alt="" coords="603,1068,822,1108"/>
+<area shape="poly" id="edge24_Node000050_Node000051" title=" " alt="" coords="540,1098,603,1093,603,1098,541,1103"/>
+<area shape="rect" id="Node000021" href="$classmadness_1_1FunctionFunctorInterface.html" title=" " alt="" coords="26,1753,218,1793"/>
+<area shape="rect" id="Node000020" href="$classF.html" title="simple class for testing the solver" alt="" coords="395,1974,433,1999"/>
+<area shape="poly" id="edge25_Node000021_Node000020" title=" " alt="" coords="144,1804,168,1841,201,1883,242,1925,288,1959,315,1971,344,1979,395,1984,394,1989,343,1984,313,1976,285,1964,238,1929,197,1887,164,1844,139,1807"/>
+<area shape="rect" id="Node000022" href="$classG.html" title=" " alt="" coords="395,1925,433,1950"/>
+<area shape="poly" id="edge26_Node000021_Node000022" title=" " alt="" coords="152,1802,211,1858,248,1886,288,1910,316,1920,345,1927,395,1934,394,1939,344,1933,314,1925,286,1914,245,1891,207,1862,148,1806"/>
+<area shape="rect" id="Node000023" href="$structGConvGNP.html" title=" " alt="" coords="367,1613,461,1638"/>
+<area shape="poly" id="edge27_Node000021_Node000023" title=" " alt="" coords="152,1741,211,1692,247,1667,286,1647,326,1634,366,1626,367,1632,328,1639,288,1652,250,1672,214,1696,155,1745"/>
+<area shape="rect" id="Node000024" href="$structGConvGRNP.html" title=" " alt="" coords="363,1662,465,1687"/>
+<area shape="poly" id="edge28_Node000021_Node000024" title=" " alt="" coords="172,1745,226,1719,286,1696,362,1679,363,1684,287,1701,228,1724,174,1749"/>
+<area shape="rect" id="Node000025" href="$structGConvGRP.html" title=" " alt="" coords="368,1711,460,1737"/>
+<area shape="poly" id="edge29_Node000021_Node000025" title=" " alt="" coords="231,1752,367,1729,368,1734,232,1758"/>
+<area shape="rect" id="Node000026" href="$classVnuclear.html" title=" " alt="" coords="375,1761,453,1786"/>
+<area shape="poly" id="edge30_Node000021_Node000026" title=" " alt="" coords="232,1771,374,1771,374,1776,232,1776"/>
+<area shape="rect" id="Node000027" href="$structmadness_1_1ScalingFunctionFunctor_3_011_01_4.html" title=" " alt="" coords="319,1860,509,1900"/>
+<area shape="poly" id="edge31_Node000021_Node000027" title=" " alt="" coords="176,1797,288,1844,330,1857,328,1862,286,1849,174,1802"/>
+<area shape="rect" id="Node000005" href="$classmadness_1_1FunctionFunctorInterface.html" title=" " alt="" coords="26,4359,218,4399"/>
+<area shape="poly" id="edge49_Node000005_Node000041" title=" " alt="" coords="122,4345,200,2839,251,1954,271,1665,284,1549,306,1533,331,1524,333,1529,308,1537,289,1552,276,1666,256,1955,205,2840,128,4345"/>
+<area shape="poly" id="edge46_Node000005_Node000020" title=" " alt="" coords="122,4345,140,3874,176,3106,200,2715,226,2374,254,2125,269,2048,285,2009,310,1991,340,1982,370,1980,395,1981,394,1987,370,1985,341,1987,312,1996,289,2012,274,2050,259,2126,231,2374,205,2715,181,3106,145,3874,127,4345"/>
+<area shape="rect" id="Node000006" href="$classAtomicOrbitalFunctor.html" title=" " alt="" coords="334,5049,494,5074"/>
+<area shape="poly" id="edge32_Node000005_Node000006" title=" " alt="" coords="130,4412,147,4549,180,4736,202,4831,227,4918,256,4988,272,5014,288,5034,310,5048,334,5057,333,5062,307,5053,285,5038,268,5017,251,4990,222,4919,197,4833,175,4737,142,4549,124,4413"/>
+<area shape="rect" id="Node000007" href="$classCharge.html" title=" " alt="" coords="380,5098,448,5123"/>
+<area shape="poly" id="edge33_Node000005_Node000007" title=" " alt="" coords="129,4412,145,4558,177,4760,198,4863,224,4957,254,5033,271,5062,288,5083,309,5097,332,5106,380,5111,380,5116,331,5111,306,5102,285,5087,267,5065,249,5035,219,4958,193,4864,171,4761,140,4558,124,4413"/>
+<area shape="rect" id="Node000008" href="$classCoreOrbitalFunctor.html" title=" " alt="" coords="342,5147,486,5173"/>
+<area shape="poly" id="edge34_Node000005_Node000008" title=" " alt="" coords="128,4412,143,4566,173,4784,195,4895,221,4996,252,5078,270,5109,288,5133,313,5149,343,5157,341,5162,311,5154,285,5137,265,5112,247,5080,216,4997,190,4896,168,4785,138,4567,123,4413"/>
+<area shape="rect" id="Node000009" href="$classCorePotentialFunctor.html" title=" " alt="" coords="335,5197,493,5222"/>
+<area shape="poly" id="edge35_Node000005_Node000009" title=" " alt="" coords="128,4412,141,4575,170,4808,191,4927,218,5035,250,5123,269,5157,288,5182,310,5197,335,5205,334,5210,308,5202,285,5186,264,5160,246,5126,213,5036,186,4928,165,4808,136,4576,123,4412"/>
+<area shape="rect" id="Node000010" href="$classCosPotentialFunctor.html" title=" " alt="" coords="338,5246,490,5271"/>
+<area shape="poly" id="edge36_Node000005_Node000010" title=" " alt="" coords="128,4412,139,4584,151,4703,167,4831,188,4958,215,5074,248,5169,268,5205,288,5231,311,5247,338,5255,337,5261,309,5252,285,5235,263,5207,244,5171,210,5076,183,4959,162,4832,145,4704,134,4585,122,4413"/>
+<area shape="rect" id="Node000011" href="$classDPot.html" title=" " alt="" coords="387,5295,441,5321"/>
+<area shape="poly" id="edge37_Node000005_Node000011" title=" " alt="" coords="127,4412,137,4593,148,4719,164,4855,185,4990,212,5113,228,5167,247,5214,267,5252,289,5281,311,5296,336,5304,387,5308,387,5313,335,5310,308,5301,285,5285,262,5255,242,5216,223,5169,207,5115,179,4991,158,4856,143,4720,132,4593,122,4413"/>
+<area shape="rect" id="Node000012" href="$classDSphere.html" title="Functor representing the log&#45;derivative of &#160;along an axis." alt="" coords="375,5345,453,5370"/>
+<area shape="poly" id="edge38_Node000005_Node000012" title=" " alt="" coords="127,4413,136,4602,146,4735,161,4879,181,5022,209,5152,226,5209,245,5259,266,5300,289,5330,307,5344,329,5352,375,5358,375,5363,328,5357,305,5349,285,5334,261,5303,240,5261,221,5211,204,5154,176,5023,155,4880,140,4736,130,4603,122,4413"/>
+<area shape="rect" id="Node000013" href="$classDipoleFunctor.html" title="A MADNESS functor to compute either x, y, or z." alt="" coords="358,5394,470,5419"/>
+<area shape="poly" id="edge39_Node000005_Node000013" title=" " alt="" coords="126,4412,134,4611,143,4751,157,4903,178,5054,206,5193,223,5253,242,5306,264,5349,289,5381,303,5392,320,5400,358,5407,357,5412,319,5405,301,5397,285,5385,260,5351,238,5308,218,5255,201,5194,172,5055,152,4904,137,4752,128,4611,121,4413"/>
+<area shape="rect" id="Node000014" href="$classEmbeddedDirichlet.html" title="Abstract base class for embedded Dirichlet problems." alt="" coords="341,5443,487,5469"/>
+<area shape="poly" id="edge40_Node000005_Node000014" title=" " alt="" coords="126,4413,132,4620,140,4767,154,4927,174,5086,203,5232,220,5295,240,5351,263,5396,289,5430,313,5446,341,5455,340,5460,310,5451,285,5434,259,5399,236,5353,215,5297,198,5233,169,5087,149,4928,135,4768,127,4620,121,4413"/>
+<area shape="rect" id="Node000019" href="$classEwaldNuclearPotentialFunctor.html" title=" " alt="" coords="305,5493,523,5518"/>
+<area shape="poly" id="edge45_Node000005_Node000019" title=" " alt="" coords="126,4413,130,4628,138,4783,151,4950,171,5118,200,5271,218,5338,239,5396,262,5444,289,5479,307,5493,304,5497,285,5483,258,5446,234,5398,213,5339,195,5272,166,5118,146,4951,133,4783,125,4628,121,4413"/>
+<area shape="rect" id="Node000028" href="$classFiniteNucleusPotential.html" title=" " alt="" coords="330,5542,498,5567"/>
+<area shape="poly" id="edge47_Node000005_Node000028" title=" " alt="" coords="126,4412,129,4636,135,4798,148,4974,168,5149,197,5309,215,5380,237,5441,261,5491,289,5529,308,5543,330,5551,328,5556,305,5547,285,5533,256,5494,232,5443,210,5381,192,5311,162,5150,143,4974,130,4798,123,4637,120,4412"/>
+<area shape="rect" id="Node000029" href="$structFunctorInterfaceWrapper.html" title=" " alt="" coords="323,1465,505,1490"/>
+<area shape="poly" id="edge48_Node000005_Node000029" title=" " alt="" coords="122,4345,200,2814,251,1912,271,1618,284,1500,301,1486,321,1477,323,1482,304,1490,289,1503,276,1619,256,1913,205,2814,128,4345"/>
+<area shape="rect" id="Node000058" href="$classGaussianFunctor.html" title=" " alt="" coords="349,5591,479,5617"/>
+<area shape="poly" id="edge50_Node000005_Node000058" title=" " alt="" coords="126,4413,127,4645,133,4814,145,4997,164,5181,194,5349,213,5422,235,5486,260,5539,289,5578,301,5589,316,5596,349,5604,348,5609,314,5601,298,5593,285,5582,255,5542,230,5488,208,5424,189,5350,159,5181,140,4998,128,4814,122,4645,120,4413"/>
+<area shape="rect" id="Node000059" href="$classGaussianPotential.html" title="Computes the electrostatic potential due to a Gaussian charge distribution." alt="" coords="344,5641,484,5666"/>
+<area shape="poly" id="edge51_Node000005_Node000059" title=" " alt="" coords="128,4412,146,4670,181,5058,204,5254,229,5427,258,5558,273,5602,289,5627,314,5645,344,5653,343,5658,312,5649,285,5631,268,5604,253,5559,224,5428,198,5255,176,5058,141,4670,123,4413"/>
+<area shape="rect" id="Node000004" href="$classGuess.html" title=" " alt="" coords="383,1810,445,1835"/>
+<area shape="poly" id="edge52_Node000005_Node000004" title=" " alt="" coords="122,4345,147,3837,192,3004,243,2217,265,1957,275,1880,284,1847,306,1830,332,1821,382,1817,382,1822,333,1826,309,1834,289,1849,281,1881,271,1958,248,2218,198,3004,153,3837,128,4345"/>
+<area shape="rect" id="Node000060" href="$classH2Potential.html" title=" " alt="" coords="365,5690,463,5715"/>
+<area shape="poly" id="edge53_Node000005_Node000060" title=" " alt="" coords="128,4412,145,4679,179,5083,202,5287,228,5468,257,5604,273,5650,289,5677,305,5689,324,5697,365,5704,364,5709,322,5703,302,5694,285,5680,268,5652,252,5606,223,5468,197,5288,174,5083,140,4680,123,4413"/>
+<area shape="rect" id="Node000061" href="$classMolecularGuessDensityFunctor.html" title=" " alt="" coords="302,5739,526,5765"/>
+<area shape="poly" id="edge54_Node000005_Node000061" title=" " alt="" coords="128,4412,144,4688,178,5108,200,5320,226,5508,256,5650,272,5698,289,5726,303,5738,300,5742,285,5730,267,5700,251,5652,221,5509,195,5321,172,5108,139,4689,122,4413"/>
+<area shape="rect" id="Node000062" href="$classMolecularNuclearChargeDensityFunctor.html" title=" " alt="" coords="298,5789,530,5829"/>
+<area shape="poly" id="edge55_Node000005_Node000062" title=" " alt="" coords="128,4412,144,4696,177,5131,200,5352,226,5547,256,5696,272,5746,289,5776,302,5787,298,5791,285,5779,267,5748,251,5697,221,5548,195,5353,172,5132,139,4697,122,4413"/>
+<area shape="rect" id="Node000063" href="$classMolecularNuclearPotentialFunctor2.html" title=" " alt="" coords="317,5853,511,5893"/>
+<area shape="poly" id="edge56_Node000005_Node000063" title=" " alt="" coords="127,4412,143,4707,175,5162,198,5394,224,5600,239,5685,255,5756,271,5808,289,5840,302,5851,317,5860,315,5865,299,5856,285,5843,266,5810,250,5757,234,5686,219,5600,193,5395,170,5163,138,4707,122,4412"/>
+<area shape="rect" id="Node000064" href="$classMolecularPotentialFunctor.html" title=" " alt="" coords="318,5918,510,5943"/>
+<area shape="poly" id="edge57_Node000005_Node000064" title=" " alt="" coords="127,4413,141,4721,172,5197,194,5439,221,5654,236,5743,253,5817,270,5871,289,5904,302,5915,319,5923,316,5928,299,5919,285,5907,265,5873,248,5818,231,5744,216,5655,189,5440,167,5197,136,4721,122,4413"/>
+<area shape="rect" id="Node000065" href="$classMolecularSurface.html" title=" " alt="" coords="347,2122,481,2147"/>
+<area shape="poly" id="edge58_Node000005_Node000065" title=" " alt="" coords="121,4345,125,3915,133,3582,146,3216,166,2855,194,2535,213,2401,233,2290,257,2208,270,2178,285,2157,298,2146,313,2138,346,2129,347,2135,315,2142,301,2150,289,2160,275,2180,262,2209,239,2291,218,2401,200,2535,171,2856,151,3216,138,3582,130,3916,126,4345"/>
+<area shape="rect" id="Node000067" href="$classMolecularVolumeComplementMask.html" title=" " alt="" coords="287,2171,541,2197"/>
+<area shape="poly" id="edge59_Node000005_Node000067" title=" " alt="" coords="121,4345,126,3923,134,3597,147,3240,167,2888,196,2575,214,2444,234,2336,258,2256,271,2227,285,2206,298,2195,301,2199,289,2210,275,2229,263,2257,240,2337,219,2445,201,2575,173,2888,152,3240,139,3597,131,3923,126,4345"/>
+<area shape="rect" id="Node000070" href="$classMolecularVolumeExponentialSwitch.html" title="Switches between positive values Vint and Vext with special log derivative." alt="" coords="308,5968,520,6008"/>
+<area shape="poly" id="edge60_Node000005_Node000070" title=" " alt="" coords="127,4412,141,4729,172,5221,194,5472,221,5694,236,5787,253,5863,270,5920,289,5954,309,5971,306,5975,285,5958,265,5922,247,5865,231,5788,216,5695,189,5472,167,5221,136,4729,122,4413"/>
+<area shape="rect" id="Node000071" href="$classMolecularVolumeExponentialSwitchLogGrad.html" title="Returns the requested component of the derivative of the log of MolecularVolumeExponentialSwitch." alt="" coords="308,6032,520,6072"/>
+<area shape="poly" id="edge61_Node000005_Node000071" title=" " alt="" coords="127,4412,140,4739,170,5252,192,5514,219,5746,234,5843,251,5923,269,5983,289,6018,309,6035,306,6039,285,6022,265,5985,246,5924,229,5844,214,5747,187,5515,165,5252,135,4740,122,4412"/>
+<area shape="rect" id="Node000072" href="$classMolecularVolumeExponentialSwitchReciprocal.html" title="Computes the reciprocal of MolecularVolumeExponentialSwitch." alt="" coords="308,6096,520,6136"/>
+<area shape="poly" id="edge62_Node000005_Node000072" title=" " alt="" coords="127,4412,139,4751,151,5007,168,5284,190,5557,217,5799,233,5900,250,5983,269,6045,289,6082,309,6099,306,6103,285,6086,264,6047,245,5984,228,5901,212,5800,185,5558,163,5285,146,5007,134,4752,122,4413"/>
+<area shape="rect" id="Node000068" href="$classMolecularVolumeMask.html" title=" " alt="" coords="329,2023,499,2049"/>
+<area shape="poly" id="edge63_Node000005_Node000068" title=" " alt="" coords="121,4345,124,3899,130,3550,143,3168,162,2790,176,2614,191,2454,210,2314,231,2198,256,2111,270,2080,285,2058,304,2043,327,2034,329,2039,307,2048,289,2062,275,2083,261,2113,237,2199,215,2314,197,2455,181,2615,168,2790,148,3168,136,3550,129,3899,126,4345"/>
+<area shape="rect" id="Node000069" href="$classMolecularVolumeMaskGrad.html" title=" " alt="" coords="313,2073,515,2098"/>
+<area shape="poly" id="edge64_Node000005_Node000069" title=" " alt="" coords="121,4344,124,3905,132,3564,144,3190,164,2821,193,2494,211,2357,232,2244,257,2159,270,2129,285,2107,311,2089,314,2093,289,2111,275,2132,262,2161,238,2245,217,2358,198,2494,169,2822,150,3191,137,3564,130,3905,126,4344"/>
+<area shape="rect" id="Node000073" href="$classNcOverR.html" title=" " alt="" coords="375,6161,453,6186"/>
+<area shape="poly" id="edge65_Node000005_Node000073" title=" " alt="" coords="127,4413,137,4764,149,5029,165,5318,186,5601,214,5853,230,5958,248,6044,267,6108,289,6146,307,6160,329,6169,375,6174,374,6179,327,6174,304,6165,285,6150,263,6110,243,6045,225,5959,208,5854,181,5602,159,5318,143,5029,132,4764,121,4413"/>
+<area shape="rect" id="Node000074" href="$classOnesFunctor.html" title=" " alt="" coords="363,6210,465,6235"/>
+<area shape="poly" id="edge66_Node000005_Node000074" title=" " alt="" coords="127,4413,136,4772,147,5046,163,5343,184,5635,212,5895,228,6003,247,6091,267,6157,289,6197,304,6209,322,6217,363,6224,362,6229,321,6222,301,6214,285,6200,262,6160,241,6093,223,6004,207,5895,179,5636,158,5343,142,5046,131,4773,121,4413"/>
+<area shape="rect" id="Node000075" href="$classOpFExact.html" title=" " alt="" coords="372,6259,456,6285"/>
+<area shape="poly" id="edge67_Node000005_Node000075" title=" " alt="" coords="127,4413,136,4782,146,5062,161,5368,183,5669,210,5935,227,6046,246,6138,266,6206,277,6230,289,6246,306,6260,327,6268,372,6273,372,6279,326,6273,304,6265,285,6250,273,6232,261,6208,240,6139,222,6047,205,5936,177,5669,156,5368,141,5062,130,4782,121,4413"/>
+<area shape="rect" id="Node000076" href="$classPotentialBasisFunctor.html" title=" " alt="" coords="333,6309,495,6334"/>
+<area shape="poly" id="edge68_Node000005_Node000076" title=" " alt="" coords="126,4412,135,4790,145,5078,160,5392,181,5701,209,5975,226,6090,245,6184,266,6254,277,6278,289,6295,309,6311,333,6319,331,6324,306,6315,285,6299,272,6281,261,6256,239,6185,220,6091,204,5976,176,5702,155,5392,140,5078,130,4790,121,4413"/>
+<area shape="rect" id="Node000077" href="$structQfunc.html" title="the result of the convolution" alt="" coords="384,6358,444,6383"/>
+<area shape="poly" id="edge69_Node000005_Node000077" title=" " alt="" coords="126,4413,134,4799,144,5094,158,5417,179,5734,207,6016,224,6133,244,6230,265,6302,277,6327,289,6345,309,6360,334,6369,360,6372,384,6372,384,6377,360,6377,333,6374,307,6365,285,6349,272,6330,260,6304,238,6231,219,6134,202,6017,174,5735,153,5417,138,5094,129,4799,121,4413"/>
+<area shape="rect" id="Node000078" href="$classRadiusFunctor.html" title=" " alt="" coords="357,6407,471,6433"/>
+<area shape="poly" id="edge70_Node000005_Node000078" title=" " alt="" coords="126,4412,133,4806,143,5110,157,5440,178,5767,206,6056,223,6177,243,6276,265,6350,276,6376,289,6394,303,6406,319,6414,357,6421,356,6426,318,6419,300,6410,285,6398,272,6379,260,6352,237,6277,218,6178,201,6057,172,5767,152,5441,137,5110,128,4807,121,4412"/>
+<area shape="rect" id="Node000079" href="$classRadiusSquareFunctor.html" title=" " alt="" coords="335,6457,493,6482"/>
+<area shape="poly" id="edge71_Node000005_Node000079" title=" " alt="" coords="126,4412,133,4815,141,5126,155,5465,176,5800,204,6097,222,6220,242,6322,264,6398,276,6425,289,6443,309,6459,335,6467,333,6473,307,6464,285,6447,271,6428,259,6400,237,6324,217,6221,199,6097,171,5800,150,5465,136,5126,127,4815,121,4412"/>
+<area shape="rect" id="Node000080" href="$classSphere.html" title=" " alt="" coords="381,6506,447,6531"/>
+<area shape="poly" id="edge72_Node000005_Node000080" title=" " alt="" coords="126,4413,132,4825,140,5143,154,5490,174,5833,203,6137,221,6264,241,6369,263,6447,276,6474,289,6493,308,6508,332,6516,381,6520,380,6525,331,6521,306,6512,285,6497,271,6476,258,6448,236,6370,215,6265,198,6138,169,5833,149,5490,135,5143,127,4825,121,4413"/>
+<area shape="rect" id="Node000081" href="$classSplitterFunctor.html" title=" " alt="" coords="355,6555,473,6581"/>
+<area shape="poly" id="edge73_Node000005_Node000081" title=" " alt="" coords="126,4413,131,4833,139,5159,153,5515,173,5866,201,6178,219,6308,240,6415,263,6495,275,6523,289,6542,302,6554,319,6562,355,6569,354,6574,317,6567,300,6558,285,6546,271,6525,258,6497,235,6416,214,6309,196,6178,168,5866,147,5515,134,5159,126,4833,121,4413"/>
+<area shape="rect" id="Node000082" href="$classVderiv.html" title=" " alt="" coords="382,6605,446,6630"/>
+<area shape="poly" id="edge74_Node000005_Node000082" title=" " alt="" coords="126,4412,131,4841,138,5174,151,5538,171,5898,200,6218,218,6351,239,6461,262,6543,275,6572,289,6592,309,6607,333,6615,382,6618,382,6624,332,6620,306,6611,285,6595,271,6574,257,6545,234,6462,213,6352,195,6218,166,5898,146,5538,133,5174,125,4841,121,4412"/>
+<area shape="rect" id="Node000083" href="$classalpha__functor.html" title=" " alt="" coords="359,6654,469,6679"/>
+<area shape="poly" id="edge75_Node000005_Node000083" title=" " alt="" coords="126,4413,130,4851,137,5191,150,5564,170,5932,198,6259,217,6395,238,6507,262,6591,275,6620,289,6641,303,6653,320,6661,359,6668,358,6673,319,6666,300,6657,285,6644,270,6623,257,6593,233,6509,211,6396,193,6259,164,5932,144,5564,132,5192,125,4851,121,4413"/>
+<area shape="rect" id="Node000084" href="$classbeta__functor.html" title=" " alt="" coords="362,2221,466,2246"/>
+<area shape="poly" id="edge76_Node000005_Node000084" title=" " alt="" coords="121,4345,127,3932,135,3613,149,3265,169,2922,198,2617,216,2489,236,2384,259,2305,271,2277,285,2257,301,2243,321,2234,362,2227,362,2233,322,2240,304,2248,289,2260,276,2280,264,2307,241,2385,221,2490,203,2617,175,2922,154,3265,141,3613,132,3932,126,4345"/>
+<area shape="rect" id="Node000085" href="$classmadchem_1_1AtomicAttractionFunctor.html" title=" " alt="" coords="311,2271,517,2311"/>
+<area shape="poly" id="edge77_Node000005_Node000085" title=" " alt="" coords="121,4344,129,3943,138,3635,153,3298,173,2966,202,2670,219,2547,238,2445,260,2368,272,2341,285,2321,309,2302,313,2306,289,2324,277,2343,265,2370,243,2446,224,2548,207,2671,179,2966,158,3298,143,3635,134,3944,126,4345"/>
+<area shape="rect" id="Node000086" href="$classmadchem_1_1AtomicBasisFunctor.html" title=" " alt="" coords="302,2335,526,2361"/>
+<area shape="poly" id="edge78_Node000005_Node000086" title=" " alt="" coords="121,4345,128,3953,138,3651,152,3323,173,2998,201,2711,219,2590,238,2491,260,2417,272,2390,285,2372,300,2359,304,2363,289,2375,277,2393,265,2419,243,2493,224,2591,207,2711,178,2999,158,3323,143,3652,134,3953,126,4345"/>
+<area shape="rect" id="Node000087" href="$classmadchem_1_1CorePotentialDerivativeFunctor.html" title=" " alt="" coords="289,2385,539,2425"/>
+<area shape="poly" id="edge79_Node000005_Node000087" title=" " alt="" coords="121,4344,130,3964,141,3672,156,3355,177,3042,205,2764,222,2648,240,2552,261,2480,273,2454,285,2436,298,2424,301,2428,289,2439,277,2457,266,2482,246,2553,227,2649,210,2765,182,3042,161,3355,146,3673,136,3964,127,4345"/>
+<area shape="rect" id="Node000088" href="$classmadchem_1_1MolecularDerivativeFunctor.html" title=" " alt="" coords="301,2449,527,2489"/>
+<area shape="poly" id="edge80_Node000005_Node000088" title=" " alt="" coords="121,4344,131,3975,142,3693,158,3387,179,3085,207,2817,223,2705,242,2612,262,2542,285,2500,299,2487,302,2491,289,2503,267,2544,247,2613,229,2705,212,2817,184,3085,163,3387,147,3694,137,3975,127,4345"/>
+<area shape="rect" id="Node000089" href="$classmadchem_1_1MolecularGuessDensityFunctor.html" title=" " alt="" coords="289,2513,539,2553"/>
+<area shape="poly" id="edge81_Node000005_Node000089" title=" " alt="" coords="121,4345,132,3986,144,3714,160,3419,181,3127,209,2869,225,2761,243,2672,263,2605,285,2564,298,2552,301,2556,289,2567,268,2607,248,2673,230,2762,214,2870,187,3128,165,3419,149,3715,138,3986,127,4345"/>
+<area shape="rect" id="Node000090" href="$classmadchem_1_1MolecularSecondDerivativeFunctor.html" title=" " alt="" coords="311,2577,517,2617"/>
+<area shape="poly" id="edge82_Node000005_Node000090" title=" " alt="" coords="122,4345,133,3998,145,3736,162,3451,183,3170,211,2922,227,2818,244,2732,263,2667,285,2628,309,2609,312,2613,289,2631,268,2669,249,2733,232,2819,216,2922,189,3171,167,3451,150,3736,139,3998,127,4345"/>
+<area shape="rect" id="Node000091" href="$classmadness_1_1BasisFunctions_1_1CartesianGaussian.html" title=" " alt="" coords="321,2641,507,2681"/>
+<area shape="poly" id="edge83_Node000005_Node000091" title=" " alt="" coords="122,4345,134,4009,163,3483,185,3213,212,2974,228,2874,245,2792,264,2730,285,2692,301,2678,319,2668,322,2673,304,2682,289,2695,269,2732,250,2793,233,2875,218,2975,191,3214,169,3483,140,4010,127,4345"/>
+<area shape="rect" id="Node000092" href="$classmadness_1_1BasisFunctions_1_1SolidHarmonicGaussian.html" title=" " alt="" coords="321,2705,507,2745"/>
+<area shape="poly" id="edge84_Node000005_Node000092" title=" " alt="" coords="122,4344,135,4020,165,3514,187,3255,214,3026,230,2931,247,2852,265,2792,285,2756,301,2742,319,2732,322,2737,304,2746,289,2759,270,2794,252,2853,235,2932,220,3027,193,3256,171,3514,141,4020,127,4345"/>
+<area shape="rect" id="Node000093" href="$classmadness_1_1CoreOrbitalDerivativeFunctor.html" title="Functor for evaluating the derivative of a core orbital for a given atom in a molecule." alt="" coords="299,2769,529,2809"/>
+<area shape="poly" id="edge85_Node000005_Node000093" title=" " alt="" coords="122,4344,136,4031,167,3546,190,3298,216,3079,231,2987,248,2911,265,2855,285,2820,298,2808,301,2812,289,2823,270,2857,253,2913,237,2988,222,3080,195,3299,173,3546,142,4032,127,4345"/>
+<area shape="rect" id="Node000094" href="$classmadness_1_1CoreOrbitalFunctor.html" title="Functor for evaluating a core orbital of a specific atom in a molecule." alt="" coords="309,2834,519,2859"/>
+<area shape="poly" id="edge86_Node000005_Node000094" title=" " alt="" coords="122,4345,136,4040,167,3570,189,3330,216,3118,231,3030,248,2957,265,2902,285,2869,307,2853,310,2857,289,2872,270,2904,253,2958,237,3031,221,3119,195,3331,173,3570,142,4041,127,4345"/>
+<area shape="rect" id="Node000095" href="$classmadness_1_1DipoleFunctor.html" title="A MADNESS functor to compute either x, y, or z." alt="" coords="325,2883,503,2909"/>
+<area shape="poly" id="edge87_Node000005_Node000095" title=" " alt="" coords="122,4345,137,4049,169,3595,191,3364,218,3160,233,3075,249,3004,266,2952,285,2920,303,2905,324,2897,326,2901,305,2910,289,2923,271,2954,254,3006,238,3076,223,3161,197,3365,174,3596,143,4050,127,4345"/>
+<area shape="rect" id="Node000096" href="$classmadness_1_1FermiNuclearDensityFunctor.html" title="Functor representing the Fermi nuclear density distribution for a given atom." alt="" coords="301,2933,527,2973"/>
+<area shape="poly" id="edge88_Node000005_Node000096" title=" " alt="" coords="122,4345,139,4062,172,3629,195,3408,221,3214,251,3065,267,3015,285,2984,298,2971,302,2975,289,2987,272,3017,256,3067,226,3214,200,3409,178,3629,144,4062,128,4345"/>
+<area shape="rect" id="Node000097" href="$classmadness_1_1GaussianNuclearDensityPotentialFunctor.html" title="Functor for evaluating the Coulomb potential of all nuclei of a molecule; nuclei are represented by p..." alt="" coords="315,2997,513,3037"/>
+<area shape="poly" id="edge89_Node000005_Node000097" title=" " alt="" coords="123,4345,140,4073,174,3660,197,3451,223,3266,252,3125,268,3077,285,3048,313,3027,316,3032,289,3051,273,3079,257,3126,228,3267,202,3452,180,3661,145,4073,128,4345"/>
+<area shape="rect" id="Node000098" href="$classmadness_1_1MolecularCorePotentialFunctor.html" title="Functor for evaluating the molecular core potential at a given point in space." alt="" coords="293,3061,535,3101"/>
+<area shape="poly" id="edge90_Node000005_Node000098" title=" " alt="" coords="120,4345,121,4102,127,3925,138,3732,158,3538,187,3360,206,3281,229,3212,255,3155,285,3112,299,3099,302,3103,289,3115,259,3158,234,3214,212,3282,193,3361,163,3539,144,3732,132,3925,126,4102,125,4345"/>
+<area shape="rect" id="Node000099" href="$classmadness_1_1MolecularPotentialFunctor.html" title="Functor for evaluating the nuclear attraction potential of a molecule at a given point." alt="" coords="309,3125,519,3165"/>
+<area shape="poly" id="edge91_Node000005_Node000099" title=" " alt="" coords="120,4345,123,4113,130,3945,142,3762,162,3578,191,3410,210,3336,231,3271,256,3217,285,3175,307,3158,310,3163,289,3179,261,3219,236,3273,215,3337,196,3411,167,3579,147,3762,135,3945,128,4113,126,4345"/>
+<area shape="rect" id="Node000100" href="$classmadness_1_1MomentFunctor.html" title="A MADNESS functor to compute the cartesian moment x^i * y^j * z^k (i, j, k integer and &gt;= 0)" alt="" coords="319,3190,509,3215"/>
+<area shape="poly" id="edge92_Node000005_Node000100" title=" " alt="" coords="120,4345,124,4121,130,3960,143,3784,163,3609,192,3448,210,3378,232,3316,257,3265,285,3226,300,3214,317,3206,320,3210,303,3218,289,3230,261,3268,237,3318,216,3379,197,3449,168,3610,148,3785,136,3960,129,4121,126,4345"/>
+<area shape="rect" id="Node000101" href="$classmadness_1_1NuclearCorrelationFactor_1_1RX__functor.html" title="compute the derivative of R wrt the displacement of atom A, coord axis" alt="" coords="309,3240,519,3280"/>
+<area shape="poly" id="edge93_Node000005_Node000101" title=" " alt="" coords="121,4345,127,4133,135,3981,149,3816,169,3651,198,3500,215,3434,236,3375,259,3327,285,3290,307,3273,310,3277,289,3294,263,3330,241,3377,221,3435,203,3501,174,3652,154,3817,140,3981,132,4133,126,4345"/>
+<area shape="rect" id="Node000102" href="$classmadness_1_1NuclearCorrelationFactor_1_1R__functor.html" title=" " alt="" coords="309,3304,519,3344"/>
+<area shape="poly" id="edge94_Node000005_Node000102" title=" " alt="" coords="121,4345,129,4144,138,4001,153,3846,173,3692,201,3551,219,3488,238,3434,260,3389,285,3354,307,3337,310,3341,289,3358,265,3391,243,3436,224,3490,207,3552,179,3693,158,3847,144,4001,134,4144,127,4345"/>
+<area shape="rect" id="Node000103" href="$classmadness_1_1NuclearCorrelationFactor_1_1U1X__functor.html" title="compute the derivative of U1 wrt the displacement of atom A, coord axis" alt="" coords="309,3368,519,3408"/>
+<area shape="poly" id="edge95_Node000005_Node000103" title=" " alt="" coords="122,4344,131,4154,141,4021,157,3876,178,3733,205,3601,222,3543,241,3492,261,3450,285,3418,307,3401,310,3406,289,3422,266,3453,245,3494,227,3545,210,3602,183,3733,162,3877,147,4021,136,4155,127,4345"/>
+<area shape="rect" id="Node000104" href="$classmadness_1_1NuclearCorrelationFactor_1_1U1__atomic__functor.html" title="U1 functor for a specific atom." alt="" coords="309,3432,519,3472"/>
+<area shape="poly" id="edge96_Node000005_Node000104" title=" " alt="" coords="122,4345,133,4166,145,4042,161,3907,182,3774,209,3651,243,3551,263,3512,285,3482,306,3466,310,3470,289,3486,267,3515,248,3553,214,3653,187,3775,166,3908,150,4042,139,4167,127,4345"/>
+<area shape="rect" id="Node000105" href="$classmadness_1_1NuclearCorrelationFactor_1_1U1__dot__U1__functor.html" title="functor for a local U1 dot U1 potential" alt="" coords="309,3496,519,3536"/>
+<area shape="poly" id="edge97_Node000005_Node000105" title=" " alt="" coords="123,4345,136,4178,165,3938,186,3815,213,3702,245,3609,264,3574,285,3546,307,3530,310,3534,289,3550,269,3576,250,3612,218,3704,191,3816,170,3939,141,4178,128,4345"/>
+<area shape="rect" id="Node000106" href="$classmadness_1_1NuclearCorrelationFactor_1_1U1__functor.html" title="functor for the local part of the U1 potential – NOTE THE SIGN" alt="" coords="309,3560,519,3600"/>
+<area shape="poly" id="edge98_Node000005_Node000106" title=" " alt="" coords="123,4345,138,4189,169,3969,190,3856,217,3753,248,3668,266,3635,285,3610,307,3594,310,3598,289,3614,270,3638,253,3670,222,3754,195,3857,174,3970,143,4190,129,4345"/>
+<area shape="rect" id="Node000107" href="$classmadness_1_1NuclearCorrelationFactor_1_1U2X__functor.html" title="compute the derivative of U2 wrt the displacement of atom A" alt="" coords="309,3624,519,3664"/>
+<area shape="poly" id="edge99_Node000005_Node000107" title=" " alt="" coords="124,4345,141,4201,173,3999,195,3897,220,3803,250,3727,267,3697,285,3674,307,3658,310,3662,289,3678,271,3700,255,3729,225,3805,200,3898,178,4000,146,4201,129,4345"/>
+<area shape="rect" id="Node000108" href="$classmadness_1_1NuclearCorrelationFactor_1_1U2__atomic__functor.html" title="U2 functor for a specific atom." alt="" coords="309,3688,519,3728"/>
+<area shape="poly" id="edge100_Node000005_Node000108" title=" " alt="" coords="125,4344,144,4212,177,4030,199,3938,224,3854,253,3785,268,3758,285,3738,307,3722,310,3726,288,3742,273,3761,258,3787,229,3856,204,3939,182,4031,149,4213,130,4345"/>
+<area shape="rect" id="Node000109" href="$classmadness_1_1NuclearCorrelationFactor_1_1U2__functor.html" title=" " alt="" coords="309,3752,519,3792"/>
+<area shape="poly" id="edge101_Node000005_Node000109" title=" " alt="" coords="119,4345,123,4240,130,4170,143,4094,163,4015,192,3938,232,3865,257,3832,285,3802,307,3787,310,3791,288,3806,261,3836,237,3868,197,3940,168,4017,148,4095,135,4171,128,4240,125,4345"/>
+<area shape="rect" id="Node000110" href="$classmadness_1_1NuclearCorrelationFactor_1_1U3X__functor.html" title="compute the derivative of U3 wrt the displacement of atom A, coord axis" alt="" coords="309,3816,519,3856"/>
+<area shape="poly" id="edge102_Node000005_Node000110" title=" " alt="" coords="121,4345,128,4250,137,4188,151,4121,171,4052,200,3984,237,3921,285,3866,307,3851,310,3855,288,3870,242,3924,205,3987,176,4054,156,4122,142,4189,133,4251,126,4345"/>
+<area shape="rect" id="Node000111" href="$classmadness_1_1NuclearCorrelationFactor_1_1U3__atomic__functor.html" title="U3 functor for a specific atom." alt="" coords="309,3880,519,3920"/>
+<area shape="poly" id="edge103_Node000005_Node000111" title=" " alt="" coords="123,4345,133,4261,144,4207,159,4149,180,4089,207,4031,242,3977,285,3930,307,3915,310,3919,288,3934,246,3980,212,4034,185,4091,164,4151,149,4208,138,4262,128,4345"/>
+<area shape="rect" id="Node000112" href="$classmadness_1_1NuclearCorrelationFactor_1_1U3__functor.html" title=" " alt="" coords="309,3944,519,3984"/>
+<area shape="poly" id="edge104_Node000005_Node000112" title=" " alt="" coords="125,4344,139,4271,168,4177,189,4127,215,4078,247,4033,285,3994,307,3980,310,3984,288,3998,251,4037,219,4081,194,4129,173,4178,145,4273,130,4345"/>
+<area shape="rect" id="Node000113" href="$classmadness_1_1NuclearCorrelationFactor_1_1square__times__V__derivative__functor.html" title=" " alt="" coords="291,4009,537,4063"/>
+<area shape="poly" id="edge105_Node000005_Node000113" title=" " alt="" coords="130,4344,149,4286,181,4213,226,4139,253,4104,285,4074,304,4061,307,4066,288,4078,257,4108,230,4142,186,4216,154,4288,135,4346"/>
+<area shape="rect" id="Node000114" href="$classmadness_1_1NuclearCorrelationFactor_1_1square__times__V__functor.html" title=" " alt="" coords="301,4088,527,4128"/>
+<area shape="poly" id="edge106_Node000005_Node000114" title=" " alt="" coords="134,4345,156,4298,189,4242,232,4186,258,4160,285,4138,306,4126,309,4131,288,4142,261,4164,236,4189,194,4245,161,4301,139,4347"/>
+<area shape="rect" id="Node000115" href="$classmadness_1_1NuclearDensityFunctor.html" title="Default functor for evaluating nuclear density at a given point in space." alt="" coords="295,4153,533,4178"/>
+<area shape="poly" id="edge107_Node000005_Node000115" title=" " alt="" coords="139,4345,164,4307,197,4264,238,4222,285,4187,311,4176,313,4180,288,4192,241,4226,201,4268,168,4311,144,4348"/>
+<area shape="rect" id="Node000116" href="$classmadness_1_1ProjRLMFunctor.html" title=" " alt="" coords="319,4202,509,4227"/>
+<area shape="poly" id="edge108_Node000005_Node000116" title=" " alt="" coords="148,4346,207,4289,245,4260,286,4236,317,4225,319,4230,288,4241,248,4265,210,4293,152,4350"/>
+<area shape="rect" id="Node000117" href="$classmadness_1_1SAPFunctor.html" title="Functor for evaluating a smoothed atomic potential, supporting open and periodic boundary conditions." alt="" coords="333,4251,495,4277"/>
+<area shape="poly" id="edge109_Node000005_Node000117" title=" " alt="" coords="164,4349,220,4316,286,4287,332,4274,333,4279,288,4292,223,4321,166,4354"/>
+<area shape="rect" id="Node000118" href="$structmadness_1_1Solver_1_1GuessDensity.html" title=" " alt="" coords="327,4301,501,4341"/>
+<area shape="poly" id="edge110_Node000005_Node000118" title=" " alt="" coords="231,4355,326,4336,327,4341,232,4360"/>
+<area shape="rect" id="Node000119" href="$classmadness_1_1VLocalFunctor.html" title=" " alt="" coords="324,4366,504,4391"/>
+<area shape="poly" id="edge111_Node000005_Node000119" title=" " alt="" coords="232,4376,324,4376,324,4381,232,4381"/>
+<area shape="rect" id="Node000120" href="$classmadness_1_1WignerSeitzPotentialFunctor.html" title="Functor for evaluating the Wigner&#45;Seitz potential in a simulation cell." alt="" coords="301,4416,527,4456"/>
+<area shape="poly" id="edge112_Node000005_Node000120" title=" " alt="" coords="232,4397,312,4413,311,4419,231,4403"/>
+<area shape="rect" id="Node000121" href="$structmadness_1_1asymptotic__slater.html" title=" " alt="" coords="333,4480,495,4520"/>
+<area shape="poly" id="edge113_Node000005_Node000121" title=" " alt="" coords="168,4404,224,4436,288,4466,333,4480,332,4485,286,4470,221,4440,165,4408"/>
+<area shape="rect" id="Node000122" href="$classmadness_1_1atomic__attraction.html" title=" " alt="" coords="312,4545,516,4570"/>
+<area shape="poly" id="edge114_Node000005_Node000122" title=" " alt="" coords="149,4408,208,4471,246,4503,288,4530,320,4542,318,4547,285,4534,243,4507,204,4475,145,4411"/>
+<area shape="rect" id="Node000123" href="$classmadness_1_1guessfactory_1_1GaussFunctor.html" title=" " alt="" coords="327,4595,501,4635"/>
+<area shape="poly" id="edge115_Node000005_Node000123" title=" " alt="" coords="143,4409,167,4449,200,4495,241,4540,288,4579,328,4597,326,4602,285,4584,237,4544,196,4498,162,4452,138,4412"/>
+<area shape="rect" id="Node000124" href="$classmadness_1_1guessfactory_1_1PlaneWaveFunctor.html" title="creates a plane&#45;wave: sin (or cos) with argument (npi/L*x)" alt="" coords="327,4659,501,4699"/>
+<area shape="poly" id="edge116_Node000005_Node000124" title=" " alt="" coords="137,4411,157,4463,189,4526,233,4591,259,4619,288,4645,307,4656,328,4664,326,4669,305,4661,285,4649,255,4623,229,4594,185,4529,152,4465,132,4413"/>
+<area shape="rect" id="Node000125" href="$classmadness_1_1guessfactory_1_1PolynomialFunctor.html" title="Project a general 3D polynomial to the MRA Grid." alt="" coords="327,4723,501,4763"/>
+<area shape="poly" id="edge117_Node000005_Node000125" title=" " alt="" coords="133,4411,150,4475,180,4556,201,4598,225,4639,255,4676,288,4709,307,4721,328,4729,326,4734,305,4725,285,4713,251,4680,221,4642,196,4600,175,4558,145,4477,127,4413"/>
+<area shape="rect" id="Node000127" href="$structmadness_1_1harmonic__potential__boxed.html" title="functor for the diamagnetic term in a box" alt="" coords="307,4787,521,4827"/>
+<area shape="poly" id="edge119_Node000005_Node000127" title=" " alt="" coords="130,4412,143,4487,171,4584,192,4636,218,4686,250,4732,288,4773,308,4786,305,4790,285,4777,246,4736,213,4689,187,4638,166,4586,138,4488,124,4413"/>
+<area shape="rect" id="Node000128" href="$structncf.html" title=" " alt="" coords="393,4851,435,4877"/>
+<area shape="poly" id="edge120_Node000005_Node000128" title=" " alt="" coords="127,4412,136,4499,146,4554,161,4614,181,4675,209,4735,244,4790,288,4837,313,4852,341,4860,393,4863,392,4868,340,4865,311,4856,285,4841,240,4793,204,4737,176,4677,156,4616,141,4555,131,4500,122,4413"/>
+<area shape="rect" id="Node000129" href="$classslymer_1_1Gaussian__Functor.html" title=" " alt="" coords="319,4901,509,4926"/>
+<area shape="poly" id="edge121_Node000005_Node000129" title=" " alt="" coords="126,4413,132,4508,140,4569,154,4636,175,4705,203,4771,241,4833,288,4886,320,4904,317,4908,285,4890,236,4836,198,4774,170,4706,149,4637,135,4570,127,4508,121,4413"/>
+<area shape="rect" id="Node000130" href="$structstepfunction.html" title=" " alt="" coords="363,4950,465,4975"/>
+<area shape="poly" id="edge122_Node000005_Node000130" title=" " alt="" coords="131,4412,152,4530,187,4688,209,4767,233,4839,260,4897,289,4935,305,4947,323,4955,363,4962,362,4967,322,4960,302,4951,285,4939,255,4900,228,4841,204,4769,182,4689,147,4531,126,4413"/>
+<area shape="rect" id="Node000131" href="$classuexact.html" title=" " alt="" coords="381,4999,447,5025"/>
+<area shape="poly" id="edge123_Node000005_Node000131" title=" " alt="" coords="130,4412,150,4539,183,4712,205,4799,230,4878,258,4942,273,4967,288,4985,309,4999,333,5007,381,5012,380,5017,332,5012,307,5003,285,4989,269,4970,253,4945,225,4880,200,4801,178,4713,144,4540,125,4413"/>
+<area shape="rect" id="Node000015" href="$classConstantSphere.html" title="The constant on a sphere problem." alt="" coords="650,5370,775,5395"/>
+<area shape="poly" id="edge41_Node000014_Node000015" title=" " alt="" coords="500,5440,540,5430,564,5418,588,5406,649,5390,650,5395,590,5410,567,5422,542,5434,501,5446"/>
+<area shape="rect" id="Node000016" href="$classCosineSphere.html" title="The cos(theta) on a sphere problem." alt="" coords="657,5419,768,5445"/>
+<area shape="poly" id="edge42_Node000014_Node000016" title=" " alt="" coords="501,5446,657,5434,657,5439,501,5452"/>
+<area shape="rect" id="Node000017" href="$classInhomoConstantSphere.html" title="The constant on a sphere problem, with inhomogeneity." alt="" coords="625,5469,800,5494"/>
+<area shape="poly" id="edge43_Node000014_Node000017" title=" " alt="" coords="501,5461,625,5471,625,5477,501,5466"/>
+<area shape="rect" id="Node000018" href="$classY20Sphere.html" title="The Y_2^0 on a sphere problem." alt="" coords="667,5518,758,5543"/>
+<area shape="poly" id="edge44_Node000014_Node000018" title=" " alt="" coords="501,5467,542,5479,567,5492,590,5504,629,5515,668,5523,667,5528,628,5520,588,5509,564,5496,540,5484,500,5472"/>
+<area shape="rect" id="Node000126" href="$classmadness_1_1guessfactory_1_1PolynomialTrigonometricsFunctor.html" title=" " alt="" coords="589,4723,836,4763"/>
+<area shape="poly" id="edge118_Node000125_Node000126" title=" " alt="" coords="514,4740,589,4740,589,4745,514,4745"/>
+<area shape="rect" id="Node000030" href="$classmadness_1_1FunctionFunctorInterface.html" title=" " alt="" coords="23,205,221,245"/>
+<area shape="poly" id="edge125_Node000030_Node000031" title=" " alt="" coords="152,254,211,310,248,338,288,362,322,374,320,379,286,366,245,343,207,314,148,258"/>
+<area shape="poly" id="edge124_Node000030_Node000029" title=" " alt="" coords="135,258,186,470,216,615,241,764,246,895,250,1115,255,1229,262,1331,273,1408,280,1435,289,1450,304,1463,323,1472,321,1476,302,1468,285,1454,275,1437,268,1410,257,1331,249,1229,245,1115,241,895,236,764,211,616,181,471,130,259"/>
+<area shape="rect" id="Node000052" href="$classOscillatory.html" title=" " alt="" coords="335,183,493,209"/>
+<area shape="poly" id="edge126_Node000030_Node000052" title=" " alt="" coords="235,211,334,201,335,207,236,217"/>
+<area shape="rect" id="Node000053" href="$classmadness_1_1DomainMaskSDFFunctor.html" title="Framework for combining a signed distance function (sdf) with a domain mask to produce MADNESS functi..." alt="" coords="289,233,539,273"/>
+<area shape="poly" id="edge127_Node000030_Node000053" title=" " alt="" coords="235,233,289,239,289,244,235,239"/>
+<area shape="rect" id="Node000054" href="$structmadness_1_1ScalingFunctionFunctor_3_01NDIM_00_01std_1_1enable__if__t_3_01std_1_1greater_02_03_07NDIM_00_011_08_4_01_4.html" title=" " alt="" coords="292,298,536,353"/>
+<area shape="poly" id="edge128_Node000030_Node000054" title=" " alt="" coords="190,248,288,283,326,295,324,300,286,288,188,253"/>
+<area shape="rect" id="Node000055" href="$classmadness_1_1int__factor__functor.html" title="Functor for the correction factor, which is multiplied with the exchange correlation potential." alt="" coords="339,5,489,45"/>
+<area shape="poly" id="edge129_Node000030_Node000055" title=" " alt="" coords="143,193,202,123,241,86,285,55,311,43,337,35,339,40,313,48,288,60,245,90,206,127,147,196"/>
+<area shape="rect" id="Node000056" href="$classmadness_1_1lr__pot__functor.html" title="Functor for the 1/r potential to induce the correct asymptotic behaviour of the exchange correlation ..." alt="" coords="325,69,503,109"/>
+<area shape="poly" id="edge130_Node000030_Node000056" title=" " alt="" coords="159,195,217,156,286,119,323,105,325,110,288,124,219,160,162,199"/>
+<area shape="rect" id="Node000057" href="$classxc__functor.html" title="Functor for the exchange correlation potential." alt="" coords="336,134,492,159"/>
+<area shape="poly" id="edge131_Node000030_Node000057" title=" " alt="" coords="189,198,286,168,336,157,338,162,287,173,191,203"/>
+<area shape="rect" id="Node000002" href="$classmadness_1_1FunctionFunctorInterface.html" title=" " alt="" coords="5,1359,239,1399"/>
+<area shape="poly" id="edge132_Node000002_Node000001" title=" " alt="" coords="146,1409,171,1442,204,1480,244,1518,288,1548,319,1561,317,1566,285,1553,240,1522,200,1484,167,1446,142,1412"/>
+<area shape="poly" id="edge134_Node000002_Node000004" title=" " alt="" coords="152,1408,198,1471,221,1509,241,1550,252,1587,256,1622,252,1683,251,1712,255,1739,266,1767,289,1795,309,1810,334,1818,383,1823,382,1828,333,1824,307,1815,285,1799,261,1770,249,1741,245,1712,246,1683,250,1622,247,1588,236,1552,217,1512,194,1474,147,1411"/>
+<area shape="rect" id="Node000003" href="$structExactSpinor.html" title=" " alt="" coords="365,1218,463,1243"/>
+<area shape="poly" id="edge133_Node000002_Node000003" title=" " alt="" coords="152,1347,211,1297,247,1273,286,1252,325,1239,364,1232,365,1237,326,1244,288,1257,250,1277,214,1302,155,1351"/>
+<area shape="rect" id="Node000132" href="$classPWFunctor.html" title=" " alt="" coords="369,1267,459,1293"/>
+<area shape="poly" id="edge135_Node000002_Node000132" title=" " alt="" coords="172,1350,226,1324,286,1301,368,1283,369,1288,287,1307,228,1329,174,1355"/>
+<area shape="rect" id="Node000133" href="$classmadness_1_1WSTAtomicBasisFunctor.html" title=" " alt="" coords="291,1317,537,1342"/>
+<area shape="poly" id="edge136_Node000002_Node000133" title=" " alt="" coords="252,1354,338,1339,338,1345,253,1359"/>
+<area shape="rect" id="Node000134" href="$structmadness_1_1Znemo_1_1p__orbital.html" title=" " alt="" coords="314,1366,514,1391"/>
+<area shape="poly" id="edge137_Node000002_Node000134" title=" " alt="" coords="252,1376,314,1376,314,1381,252,1381"/>
+<area shape="rect" id="Node000135" href="$structmadness_1_1Znemo_1_1s__orbital.html" title=" " alt="" coords="315,1415,513,1441"/>
+<area shape="poly" id="edge138_Node000002_Node000135" title=" " alt="" coords="253,1398,338,1413,338,1418,252,1403"/>
+<area shape="rect" id="Node000136" href="$classmadness_1_1FunctionFunctorInterface.html" title=" " alt="" coords="26,6696,218,6736"/>
+<area shape="poly" id="edge139_Node000136_Node000001" title=" " alt="" coords="123,6682,173,5815,207,5127,236,4411,242,2998,247,2495,256,2053,268,1735,275,1640,284,1599,299,1585,317,1577,319,1582,302,1590,289,1601,281,1641,273,1735,261,2053,253,2495,247,2998,241,4411,212,5127,178,5816,128,6682"/>
+<area shape="rect" id="Node000137" href="$classExpFunctor.html" title=" " alt="" coords="347,6753,481,6778"/>
+<area shape="poly" id="edge140_Node000136_Node000137" title=" " alt="" coords="232,6732,347,6751,346,6757,231,6737"/>
+<area shape="rect" id="Node000138" href="$classExpFunctor3d.html" title=" " alt="" coords="339,6703,489,6729"/>
+<area shape="poly" id="edge141_Node000136_Node000138" title=" " alt="" coords="232,6713,338,6713,338,6719,232,6719"/>
+<area shape="rect" id="Node000066" href="$classMolecularMaskBase.html" title=" " alt="" coords="45,2098,199,2123"/>
+<area shape="poly" id="edge142_Node000066_Node000065" title=" " alt="" coords="213,2115,347,2127,346,2132,212,2121"/>
+<area shape="poly" id="edge143_Node000066_Node000067" title=" " alt="" coords="177,2125,287,2156,344,2169,343,2174,286,2161,176,2130"/>
+<area shape="poly" id="edge144_Node000066_Node000068" title=" " alt="" coords="173,2091,286,2057,338,2046,339,2051,287,2063,174,2096"/>
+<area shape="poly" id="edge145_Node000066_Node000069" title=" " alt="" coords="212,2100,313,2091,313,2097,213,2106"/>
+</map>

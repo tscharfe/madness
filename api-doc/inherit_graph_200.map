@@ -1,0 +1,35 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="Node000000" href="$classmadness_1_1BaseTensor.html" title="The base class for tensors defines generic capabilities." alt="" coords="5,329,168,355"/>
+<area shape="rect" id="Node000001" href="$classmadness_1_1Tensor.html" title=" " alt="" coords="226,5,431,31"/>
+<area shape="poly" id="edge184_Node000000_Node000001" title=" " alt="" coords="88,316,99,258,121,183,138,144,158,106,184,70,214,40,233,28,236,33,218,44,188,74,163,108,143,146,126,185,104,259,94,317"/>
+<area shape="rect" id="Node000002" href="$classmadness_1_1Tensor.html" title=" " alt="" coords="243,55,414,80"/>
+<area shape="poly" id="edge185_Node000000_Node000002" title=" " alt="" coords="91,315,105,266,129,205,165,142,188,114,214,89,242,75,244,79,218,94,192,117,169,145,133,207,110,268,96,317"/>
+<area shape="rect" id="Node000003" href="$classmadness_1_1Tensor.html" title=" " alt="" coords="223,104,435,159"/>
+<area shape="poly" id="edge186_Node000000_Node000003" title=" " alt="" coords="98,316,143,244,176,204,214,169,235,157,238,161,218,173,180,208,147,247,103,319"/>
+<area shape="rect" id="Node000004" href="$classmadness_1_1Tensor.html" title=" " alt="" coords="229,183,428,223"/>
+<area shape="poly" id="edge187_Node000000_Node000004" title=" " alt="" coords="108,317,154,274,184,252,215,233,242,221,244,226,217,238,187,257,158,279,111,321"/>
+<area shape="rect" id="Node000005" href="$classmadness_1_1Tensor.html" title=" " alt="" coords="216,248,441,273"/>
+<area shape="poly" id="edge188_Node000000_Node000005" title=" " alt="" coords="124,321,167,301,215,282,257,271,258,276,217,287,169,306,126,326"/>
+<area shape="rect" id="Node000006" href="$classmadness_1_1Tensor.html" title=" " alt="" coords="239,297,418,323"/>
+<area shape="poly" id="edge189_Node000000_Node000006" title=" " alt="" coords="182,327,239,319,239,324,182,332"/>
+<area shape="rect" id="Node000007" href="$classmadness_1_1Tensor.html" title=" " alt="" coords="223,347,435,401"/>
+<area shape="poly" id="edge190_Node000000_Node000007" title=" " alt="" coords="182,352,223,357,222,363,181,357"/>
+<area shape="rect" id="Node000008" href="$classmadness_1_1Tensor.html" title=" " alt="" coords="226,425,431,451"/>
+<area shape="poly" id="edge191_Node000000_Node000008" title=" " alt="" coords="120,360,165,386,217,410,258,423,257,428,215,415,162,391,117,364"/>
+<area shape="rect" id="Node000009" href="$classmadness_1_1Tensor.html" title=" " alt="" coords="243,475,414,500"/>
+<area shape="poly" id="edge192_Node000000_Node000009" title=" " alt="" coords="108,364,154,413,184,438,217,460,249,472,247,477,215,464,181,443,151,417,104,367"/>
+<area shape="rect" id="Node000010" href="$classmadness_1_1SRConf.html" title=" " alt="" coords="241,524,416,549"/>
+<area shape="poly" id="edge193_Node000000_Node000010" title=" " alt="" coords="102,366,120,399,146,438,179,477,217,509,243,521,241,526,215,514,175,481,142,441,116,402,98,369"/>
+<area shape="rect" id="Node000012" href="$classmadness_1_1Tensor.html" title="A tensor is a multidimensional array." alt="" coords="244,573,413,599"/>
+<area shape="poly" id="edge195_Node000000_Node000012" title=" " alt="" coords="98,367,114,410,138,462,173,515,194,538,217,558,245,573,243,577,215,563,190,542,169,518,134,464,109,412,93,369"/>
+<area shape="rect" id="Node000016" href="$classmadness_1_1TensorTrain.html" title=" " alt="" coords="229,623,429,648"/>
+<area shape="poly" id="edge199_Node000000_Node000016" title=" " alt="" coords="95,368,108,419,131,485,167,552,190,582,218,608,238,620,236,625,214,612,186,585,163,555,126,487,103,421,90,369"/>
+<area shape="rect" id="Node000011" href="$classmadness_1_1SVDTensor.html" title=" " alt="" coords="491,524,687,549"/>
+<area shape="poly" id="edge194_Node000010_Node000011" title=" " alt="" coords="430,534,491,534,491,539,430,539"/>
+<area shape="rect" id="Node000013" href="$classmadness_1_1GenTensor.html" title=" " alt="" coords="492,573,687,599"/>
+<area shape="poly" id="edge196_Node000012_Node000013" title=" " alt="" coords="427,583,492,583,492,589,427,589"/>
+<area shape="rect" id="Node000015" href="$classmadness_1_1SliceTensor.html" title="Indexing a non&#45;constant tensor with slices returns a SliceTensor." alt="" coords="489,623,689,648"/>
+<area shape="poly" id="edge198_Node000012_Node000015" title=" " alt="" coords="410,599,522,620,521,625,409,604"/>
+<area shape="rect" id="Node000014" href="$classmadness_1_1SliceLowRankTensor.html" title="implements a temporary(!) slice of a LowRankTensor" alt="" coords="737,573,996,599"/>
+<area shape="poly" id="edge197_Node000013_Node000014" title=" " alt="" coords="700,583,737,583,737,589,700,589"/>
+</map>
